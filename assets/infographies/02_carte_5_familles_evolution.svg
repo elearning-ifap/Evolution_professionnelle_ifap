@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="630" viewBox="0 0 1100 630" role="img" aria-labelledby="title desc">
+<title id="title">Les cinq familles d’évolution professionnelle</title>
+<desc id="desc">Une carte place le projet d’évolution au centre et cinq familles autour : faire évoluer ce que je fais, bouger, progresser ou accéder, faire reconnaître mes acquis et préparer une transition.</desc>
+<rect width="100%" height="100%" rx="28" fill="#F7F7F5"/>
+
+<defs>
+ <filter id="s2" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#2D2D2D" flood-opacity=".10"/></filter>
+</defs>
+<circle cx="550" cy="310" r="112" fill="#FEFEFE" stroke="#2D2D2D" stroke-width="3" filter="url(#s2)"/>
+<text x="550" y="282" text-anchor="middle" font-family="Lato,Arial,sans-serif" font-size="21" font-weight="800" fill="#6F6F6F">MON PROJET</text>
+<text x="550" y="316" text-anchor="middle" font-family="Lato,Arial,sans-serif" font-size="31" font-weight="900" fill="#2D2D2D">D’ÉVOLUTION</text>
+<text x="550" y="350" text-anchor="middle" font-family="Lato,Arial,sans-serif" font-size="16" font-weight="700" fill="#6F6F6F">plusieurs chemins possibles</text>
+
+<g fill="none" stroke-width="7" stroke-linecap="round">
+ <path d="M470 235 C390 180 330 150 255 140" stroke="#2FB6BC"/>
+ <path d="M625 225 C720 160 790 145 865 150" stroke="#50B4DC"/>
+ <path d="M660 310 C770 310 825 310 930 310" stroke="#F2B445"/>
+ <path d="M625 395 C720 465 790 480 865 470" stroke="#7C6EAF"/>
+ <path d="M470 395 C390 465 325 485 245 470" stroke="#ED9C89"/>
+</g>
+
+<g font-family="Lato,Arial,sans-serif">
+ <rect x="45" y="68" width="300" height="155" rx="22" fill="#FEFEFE" stroke="#2FB6BC" stroke-width="4"/>
+ <circle cx="85" cy="108" r="23" fill="#2FB6BC"/><text x="85" y="116" text-anchor="middle" font-size="22" font-weight="900" fill="white">1</text>
+ <text x="122" y="106" font-size="21" font-weight="900" fill="#2D2D2D">Faire évoluer ce que je fais</text>
+ <text x="85" y="146" font-size="15" font-weight="700" fill="#6F6F6F">compétences · missions</text>
+ <text x="85" y="171" font-size="15" font-weight="700" fill="#6F6F6F">expertise · responsabilités</text>
+
+ <rect x="755" y="68" width="300" height="155" rx="22" fill="#FEFEFE" stroke="#50B4DC" stroke-width="4"/>
+ <circle cx="795" cy="108" r="23" fill="#50B4DC"/><text x="795" y="116" text-anchor="middle" font-size="22" font-weight="900" fill="white">2</text>
+ <text x="832" y="106" font-size="24" font-weight="900" fill="#2D2D2D">Bouger</text>
+ <text x="795" y="146" font-size="15" font-weight="700" fill="#6F6F6F">poste · service · employeur</text>
+ <text x="795" y="171" font-size="15" font-weight="700" fill="#6F6F6F">lieu · métier</text>
+
+ <rect x="790" y="245" width="290" height="145" rx="22" fill="#FEFEFE" stroke="#F2B445" stroke-width="4"/>
+ <circle cx="828" cy="285" r="23" fill="#F2B445"/><text x="828" y="293" text-anchor="middle" font-size="22" font-weight="900" fill="white">3</text>
+ <text x="865" y="278" font-size="20" font-weight="900" fill="#2D2D2D">Progresser</text>
+ <text x="865" y="303" font-size="20" font-weight="900" fill="#2D2D2D">ou accéder</text>
+ <text x="828" y="342" font-size="14" font-weight="700" fill="#6F6F6F">avancement · concours · examen</text>
+
+ <rect x="755" y="425" width="300" height="145" rx="22" fill="#FEFEFE" stroke="#7C6EAF" stroke-width="4"/>
+ <circle cx="795" cy="465" r="23" fill="#7C6EAF"/><text x="795" y="473" text-anchor="middle" font-size="22" font-weight="900" fill="white">4</text>
+ <text x="832" y="458" font-size="20" font-weight="900" fill="#2D2D2D">Faire reconnaître</text>
+ <text x="832" y="484" font-size="20" font-weight="900" fill="#2D2D2D">mes acquis</text>
+ <text x="795" y="525" font-size="14" font-weight="700" fill="#6F6F6F">formation · certification · VAE</text>
+
+ <rect x="45" y="425" width="300" height="145" rx="22" fill="#FEFEFE" stroke="#ED9C89" stroke-width="4"/>
+ <circle cx="85" cy="465" r="23" fill="#ED9C89"/><text x="85" y="473" text-anchor="middle" font-size="22" font-weight="900" fill="white">5</text>
+ <text x="122" y="458" font-size="20" font-weight="900" fill="#2D2D2D">Préparer</text>
+ <text x="122" y="484" font-size="20" font-weight="900" fill="#2D2D2D">une transition</text>
+ <text x="85" y="525" font-size="14" font-weight="700" fill="#6F6F6F">reconversion · positions statutaires</text>
+</g>
+
+</svg>

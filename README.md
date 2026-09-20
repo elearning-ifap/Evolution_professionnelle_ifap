@@ -31,3 +31,18 @@ Le prototype conserve les réponses dans le stockage local du navigateur (`local
 - terminer la recette tablette / desktop ;
 - intégrer la couche SCORM 1.2 pour LIANE ;
 - effectuer la recette réglementaire finale avant publication.
+
+
+## v0.9
+- Personas recontextualisés pour la Nouvelle-Calédonie.
+- Portraits intégrés localement dans `assets/portraits/`.
+- Suppression des mentions de test/provisoire.
+- Aucun chargement distant nécessaire pour les portraits.
+
+## v0.9 — recette de l’accueil
+
+- recomposition verticale du panneau des personas ;
+- cartes élargies et meilleure lisibilité des rôles/citations ;
+- portraits recadrés sans texte ni faux logo dans l’image ;
+- amélioration de l’affichage tablette et mobile ;
+- portraits toujours intégrés localement.

@@ -51,15 +51,15 @@ h1,h2,h3{line-height:1.12;margin-top:0}
 h1{font-size:clamp(38px,5vw,64px);letter-spacing:-.035em;margin-bottom:20px;font-weight:900}
 h2{font-size:clamp(29px,4vw,44px);letter-spacing:-.025em;margin-bottom:14px;font-weight:900}
 .lead{font-size:19px;color:#555;max-width:690px}
-.hero-art{background:var(--teal-lt);position:relative;display:flex;align-items:center;justify-content:center;padding:45px;overflow:hidden}
+.hero-art{background:var(--teal-lt);position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:38px 34px;overflow:hidden}
 .hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%}
 .hero-art:before{width:330px;height:330px;background:var(--yellow);right:-100px;top:-90px;opacity:.9}
 .hero-art:after{width:260px;height:260px;border:35px solid var(--violet);left:-100px;bottom:-100px;opacity:.5}
-.people{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:390px}
-.person{background:#fff;border-radius:18px;padding:18px;min-height:150px;box-shadow:0 8px 24px rgba(45,45,45,.08);display:flex;flex-direction:column;justify-content:flex-end}
-.avatar{width:66px;height:66px;border-radius:50%;object-fit:cover;object-position:center;margin-bottom:auto;border:3px solid #fff;box-shadow:0 0 0 1px var(--line),0 7px 16px rgba(45,45,45,.12)}
+.people{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:500px;margin:0 auto}
+.person{background:#fff;border-radius:18px;padding:16px;min-height:210px;box-shadow:0 8px 24px rgba(45,45,45,.08);display:flex;flex-direction:column;justify-content:flex-start}
+.avatar{width:76px;height:76px;border-radius:50%;object-fit:cover;object-position:center;margin-bottom:10px;border:3px solid #fff;box-shadow:0 0 0 1px var(--line),0 7px 16px rgba(45,45,45,.12)}
 .person-photo{width:100%;height:100%;object-fit:cover;display:block}
-.person b{font-size:14px}.person small{color:var(--gray)}
+.person b{font-size:15px;margin-bottom:2px}.person small{color:var(--night);font-size:12px;margin-top:auto;padding-top:8px;font-style:italic}
 .meta{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0}
 .pill{display:inline-flex;gap:7px;align-items:center;padding:8px 11px;background:var(--off);border-radius:999px;font-size:13px;font-weight:700}
 .primary,.secondary,.ghost{border:0;border-radius:13px;padding:13px 18px;font-weight:900}
@@ -131,7 +131,7 @@ textarea{min-height:145px;resize:vertical}
 .resume-banner.show{display:flex;gap:12px;align-items:center;justify-content:space-between}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:900px){
- .hero{grid-template-columns:1fr}.hero-art{min-height:300px}.hero-copy{padding:46px 32px}
+ .hero{grid-template-columns:1fr}.hero-art{min-height:360px;padding:36px 28px}.hero-copy{padding:46px 32px}
  .content{padding:38px 30px}.grid,.map{grid-template-columns:repeat(2,1fr)}
  .stepper{grid-template-columns:1fr 1fr}.step:nth-child(2):after{display:none}
  .progress{width:120px}.brand-txt span{display:none}
@@ -141,7 +141,7 @@ textarea{min-height:145px;resize:vertical}
  .shell{width:calc(100% - 16px);margin-top:10px}.panel{border-radius:17px}
  .content{padding:28px 20px}.grid,.grid.two,.status-grid,.summary,.map,.stepper{grid-template-columns:1fr}
  .step:after{display:none}.hero-copy{padding:34px 22px}.hero-art{padding:24px}
- .people{gap:9px}.person{padding:12px;min-height:130px}
+ .people{grid-template-columns:1fr;gap:10px}.person{padding:14px;min-height:155px}.avatar{width:68px;height:68px}
  .persona{grid-template-columns:1fr;text-align:center}.navin{grid-template-columns:96px 1fr 96px;padding:8px 10px}
  .navbtn{padding:10px 8px}.navcenter span{display:none}.iconbtn .label{display:none}
 }
@@ -275,6 +275,14 @@ textarea{min-height:145px;resize:vertical}
 .visual-intro{display:flex;align-items:center;gap:10px;margin:8px 0 0;color:var(--gray);font-size:14px;font-weight:700}
 .visual-intro:before{content:"";width:28px;height:4px;border-radius:99px;background:var(--teal)}
 
+
+.persona-heading{position:relative;z-index:2;width:100%;max-width:500px;margin:0 auto 18px;color:var(--night)}
+.persona-heading strong{display:block;font-size:20px;line-height:1.15}
+.persona-heading span{display:block;font-size:12px;color:var(--gray);margin-top:5px;max-width:420px}
+.persona-role{display:block;font-size:11.5px;font-weight:800;color:var(--gray);line-height:1.3;margin:1px 0 5px}
+.person small{line-height:1.35}
+@media(max-width:620px){.persona-heading strong{font-size:16px}.persona-heading span{font-size:11px}}
+
 </style>
 </head>
 <body>
@@ -313,13 +321,13 @@ textarea{min-height:145px;resize:vertical}
   <button class="primary" data-go="next">Commencer le parcours →</button>
  </div>
  <div class="hero-art" aria-label="Quatre profils d’agents publics illustrant différentes situations professionnelles">
-  <div class="people">
-   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva"><b>Maëva</b><small>« J’aimerais progresser. »</small></div>
-   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1700616466971-a4e05aa89e7d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Mikaël"><b>Mikaël</b><small>« J’aimerais bouger. »</small></div>
-   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1581091870619-835cee86e759?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=1200" alt="Portrait photographique de Sonia"><b>Sonia</b><small>« J’ai envie d’autre chose. »</small></div>
-   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1766066014773-0074bf4911de?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de David"><b>David</b><small>« Comment valoriser mon expérience ? »</small></div>
+  <div class="persona-heading"><strong>Quatre profils pour vous aider à vous projeter</strong><span>Des situations inspirées du quotidien des agents publics en Nouvelle-Calédonie.</span></div><div class="people">
+   <div class="person"><img class="avatar" src="assets/portraits/maeva.webp" alt="Portrait de Maëva, gestionnaire administrative en commune"><b>Maëva</b><span class="persona-role">Gestionnaire administrative en commune</span><small>« J’aimerais prendre davantage de responsabilités. »</small></div>
+   <div class="person"><img class="avatar" src="assets/portraits/mikael.webp" alt="Portrait de Mikaël, agent technique en établissement public"><b>Mikaël</b><span class="persona-role">Agent technique en établissement public</span><small>« J’aimerais changer d’environnement professionnel. »</small></div>
+   <div class="person"><img class="avatar" src="assets/portraits/sonia.webp" alt="Portrait de Sonia, agente de gestion en province"><b>Sonia</b><span class="persona-role">Agente de gestion en province</span><small>« J’ai envie d’évoluer vers un autre métier. »</small></div>
+   <div class="person"><img class="avatar" src="assets/portraits/david.webp" alt="Portrait de David, agent expérimenté dans un service support"><b>David</b><span class="persona-role">Agent expérimenté dans un service support</span><small>« Comment mieux valoriser mon expérience ? »</small></div>
   </div>
-  <p class="mini" style="position:relative;z-index:2;margin:18px 0 0;text-align:center">Portraits photographiques intégrés pour tester la direction visuelle des personas.</p>
+  
  </div>
 </div>
 </section>
@@ -429,8 +437,8 @@ textarea{min-height:145px;resize:vertical}
 <div class="panel content">
  <div class="kicker">Un premier réflexe</div>
  <div class="persona">
-  <div class="portrait"><img src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva"></div>
-  <div><h3>Maëva aimerait progresser</h3><p>Elle souhaite exercer davantage de responsabilités. Sa première idée est : <strong>« Il faut que je passe un concours. »</strong></p></div>
+  <div class="portrait"><img src="assets/portraits/maeva.webp" alt="Portrait photographique de Maëva"></div>
+  <div><h3>Maëva, gestionnaire administrative en commune</h3><p>Elle souhaite exercer davantage de responsabilités. Sa première idée est : <strong>« Il faut que je passe un concours. »</strong></p></div>
  </div>
  <h3 style="margin-top:26px">Est-ce nécessairement la première question à se poser&nbsp;?</h3>
  <div class="quiz" id="maevaQuiz">
@@ -689,7 +697,7 @@ textarea{min-height:145px;resize:vertical}
 <div class="panel content">
  <div class="kicker">Étape 8 · Vérifier mon raisonnement</div>
  <div class="case-layout">
-  <img class="case-photo" src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva">
+  <img class="case-photo" src="assets/portraits/maeva.webp" alt="Portrait photographique de Maëva">
   <div><h2>Que conseilleriez-vous à Maëva&nbsp;?</h2><p>Maëva souhaite davantage de responsabilités. Elle trouve l’annonce d’un concours de catégorie supérieure et décide immédiatement de commencer à réviser.</p></div>
  </div>
  <p class="sub" style="margin-top:22px">Sélectionnez les démarches qu’elle aurait intérêt à réaliser avant de s’engager pleinement dans la préparation.</p>
@@ -709,7 +717,7 @@ textarea{min-height:145px;resize:vertical}
 <div class="panel content">
  <div class="kicker">Étape 8 · Vérifier mon raisonnement</div>
  <div class="case-layout">
-  <img class="case-photo" src="https://images.unsplash.com/photo-1766066014773-0074bf4911de?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de David">
+  <img class="case-photo" src="assets/portraits/david.webp" alt="Portrait photographique de David">
   <div><h2>Et pour David&nbsp;?</h2><p>David souhaite accéder à une activité proche de fonctions qu’il exerce déjà depuis plusieurs années. Il pense devoir reprendre une formation complète.</p></div>
  </div>
  <p class="sub" style="margin-top:22px">Que pourrait-il vérifier avant de repartir de zéro&nbsp;?</p>
@@ -1035,6 +1043,14 @@ textarea{min-height:145px;resize:vertical}
    ).join(''):'<div class="box">Aucun scénario construit.</div>';
    const html=`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Mon carnet d’évolution professionnelle</title><style>
 body{font-family:Arial,sans-serif;color:#2d2d2d;margin:34px;line-height:1.45}h1{font-size:30px;margin-bottom:3px}h2{font-size:19px;border-bottom:2px solid #2FB6BC;padding-bottom:7px;margin-top:28px}h3{font-size:15px;margin-bottom:5px}.cover{padding:45px 0 70px}.ifap{font-weight:900;font-size:20px}.meta{color:#666}.box{border:1px solid #ddd;border-radius:10px;padding:13px;margin:10px 0}.scenario{break-inside:avoid}.foot{margin-top:40px;font-size:11px;color:#777}@media print{button{display:none}}
+
+.persona-heading{position:relative;z-index:2;grid-column:1/-1;margin-bottom:2px;color:var(--night)}
+.persona-heading strong{display:block;font-size:18px;line-height:1.2}
+.persona-heading span{display:block;font-size:12px;color:var(--gray);margin-top:4px}
+.persona-role{display:block;font-size:11.5px;font-weight:800;color:var(--gray);line-height:1.3;margin:1px 0 5px}
+.person small{line-height:1.35}
+@media(max-width:620px){.persona-heading strong{font-size:16px}.persona-heading span{font-size:11px}}
+
 </style></head><body>
 <div class="cover"><div class="ifap">IFAP</div><h1>Mon carnet d’évolution professionnelle</h1><p class="meta">Issu du module « Explorer mes possibilités d’évolution professionnelle »</p><p class="meta">${new Date().toLocaleDateString('fr-FR')}</p></div>
 <h2>Ce que je recherche</h2><div class="box">${esc(state.projection||list(state.envies))}</div>
