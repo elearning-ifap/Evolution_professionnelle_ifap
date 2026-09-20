@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explorer mes possibilités d’évolution professionnelle — prototype UX</title>
+<style>
+:root{
+  --night:#2D2D2D;--gray:#6F6F6F;--line:#E7E7E2;--off:#F7F7F5;--white:#FEFEFE;
+  --teal:#00B4B4;--teal-lt:#E5F7F7;--yellow:#F2B445;--yellow-lt:#FEF8EE;
+  --violet:#7864B4;--violet-lt:#EDE9F7;--sky:#50B4DC;--sky-lt:#EAF6FC;
+  --salmon:#E8907A;--salmon-lt:#FDF0EC;
+  --shadow:0 12px 34px rgba(45,45,45,.09);
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Lato,Arial,sans-serif;background:#efefec;color:var(--night);line-height:1.55}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #111;outline-offset:3px}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:20;background:rgba(254,254,254,.96);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.topbar-in{max-width:1180px;margin:auto;padding:12px 22px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.wordmark{display:flex;flex-direction:column;justify-content:center;min-width:58px;line-height:1}
+.wordmark strong{font-size:20px;font-weight:900;letter-spacing:.02em;color:var(--night)}
+.wordmark i{display:block;width:32px;height:4px;border-radius:999px;background:var(--teal);margin-top:6px}
+.brand-txt{min-width:0}
+.brand-txt strong{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-txt span{display:block;font-size:12px;color:var(--gray)}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
+.progress{width:190px;height:8px;border-radius:99px;background:#e9e9e6;overflow:hidden}
+.progress>i{display:block;height:100%;width:0;background:var(--teal);transition:.25s}
+.pct{font-size:12px;font-weight:700;color:var(--gray);min-width:36px}
+.iconbtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;color:var(--night)}
+.iconbtn:hover{background:var(--off)}
+.shell{width:min(1120px,calc(100% - 28px));margin:24px auto 92px;flex:1}
+.screen{display:none}
+.screen.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}
+.panel{background:#fff;border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;min-height:590px}
+.hero-copy{padding:68px 60px 54px}
+.kicker{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+.kicker:after{content:"";height:2px;width:54px;background:var(--teal-lt)}
+h1,h2,h3{line-height:1.12;margin-top:0}
+h1{font-size:clamp(38px,5vw,64px);letter-spacing:-.035em;margin-bottom:20px;font-weight:900}
+h2{font-size:clamp(29px,4vw,44px);letter-spacing:-.025em;margin-bottom:14px;font-weight:900}
+.lead{font-size:19px;color:#555;max-width:690px}
+.hero-art{background:var(--teal-lt);position:relative;display:flex;align-items:center;justify-content:center;padding:45px;overflow:hidden}
+.hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%}
+.hero-art:before{width:330px;height:330px;background:var(--yellow);right:-100px;top:-90px;opacity:.9}
+.hero-art:after{width:260px;height:260px;border:35px solid var(--violet);left:-100px;bottom:-100px;opacity:.5}
+.people{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:390px}
+.person{background:#fff;border-radius:18px;padding:18px;min-height:150px;box-shadow:0 8px 24px rgba(45,45,45,.08);display:flex;flex-direction:column;justify-content:flex-end}
+.avatar{width:66px;height:66px;border-radius:50%;object-fit:cover;object-position:center;margin-bottom:auto;border:3px solid #fff;box-shadow:0 0 0 1px var(--line),0 7px 16px rgba(45,45,45,.12)}
+.person-photo{width:100%;height:100%;object-fit:cover;display:block}
+.person b{font-size:14px}.person small{color:var(--gray)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0}
+.pill{display:inline-flex;gap:7px;align-items:center;padding:8px 11px;background:var(--off);border-radius:999px;font-size:13px;font-weight:700}
+.primary,.secondary,.ghost{border:0;border-radius:13px;padding:13px 18px;font-weight:900}
+.primary{background:var(--teal);color:#fff}.primary:hover{filter:brightness(.94)}
+.secondary{background:var(--night);color:#fff}
+.ghost{background:var(--off);color:var(--night)}
+.content{padding:48px 54px}
+.sub{color:var(--gray);font-size:17px;max-width:780px;margin-bottom:26px}
+.message{padding:18px 20px;border-radius:14px;background:var(--teal-lt);border-left:5px solid var(--teal);margin:24px 0}
+.message strong{font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+.choice{position:relative;border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:19px;text-align:left;min-height:92px;transition:.16s}
+.choice:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,45,45,.07)}
+.choice.selected{border-color:var(--teal);background:var(--teal-lt)}
+.choice.selected:after{content:"✓";position:absolute;right:12px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:900}
+.choice b{display:block;margin-bottom:3px}
+.hint{font-size:13px;color:var(--gray)}
+.stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}
+.step{border-radius:16px;padding:20px 16px;background:var(--off);position:relative}
+.step .n{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--teal);color:#fff;font-weight:900;margin-bottom:12px}
+.step:not(:last-child):after{content:"→";position:absolute;right:-12px;top:43%;z-index:3;font-size:18px;font-weight:900;color:#bbb}
+.field{margin:22px 0}
+label{font-weight:900;display:block;margin-bottom:8px}
+textarea,input[type=text]{width:100%;border:1.5px solid #d8d8d2;border-radius:14px;padding:14px 15px;background:#fff}
+textarea{min-height:145px;resize:vertical}
+.counter{text-align:right;color:var(--gray);font-size:12px;margin-top:5px}
+.persona{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:center;background:var(--yellow-lt);padding:24px;border-radius:18px}
+.persona .portrait{width:104px;height:104px;border-radius:50%;overflow:hidden;margin:auto;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 9px 20px rgba(45,45,45,.11)}
+.persona .portrait img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.persona h3{font-size:24px;margin-bottom:7px}
+.quiz{display:grid;gap:12px;margin-top:20px}
+.feedback{display:none;margin-top:18px;padding:17px;border-radius:14px;background:var(--teal-lt)}
+.feedback.show{display:block}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.status{border:1.5px solid var(--line);border-radius:17px;padding:21px;background:#fff;text-align:left}
+.status.selected{border-color:var(--teal);background:var(--teal-lt)}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.sumcard{padding:20px;border-radius:16px;background:var(--off)}
+.sumcard h3{font-size:16px;margin-bottom:8px}
+.map{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:stretch;margin-top:26px}
+.family{padding:20px 17px;border-radius:18px;min-height:225px;border:1px solid var(--line);background:#fff}
+.family:nth-child(1){border-top:6px solid var(--teal)}
+.family:nth-child(2){border-top:6px solid var(--sky)}
+.family:nth-child(3){border-top:6px solid var(--yellow)}
+.family:nth-child(4){border-top:6px solid var(--violet)}
+.family:nth-child(5){border-top:6px solid var(--salmon)}
+.family h3{font-size:17px;margin-bottom:12px}
+.family ul{padding-left:18px;margin:0;color:#555;font-size:14px}
+.navbar{position:fixed;bottom:0;left:0;right:0;background:rgba(254,254,254,.97);border-top:1px solid var(--line);z-index:25}
+.navin{max-width:1180px;margin:auto;padding:10px 22px;display:grid;grid-template-columns:140px 1fr 140px;align-items:center;gap:16px}
+.navcenter{text-align:center}
+.navcenter b{display:block;font-size:13px}.navcenter span{font-size:12px;color:var(--gray)}
+.navbtn{border:0;border-radius:12px;padding:11px 14px;background:var(--off);font-weight:900}
+.navbtn.next{background:var(--night);color:#fff}
+.navbtn:disabled{opacity:.35;cursor:not-allowed}
+.drawer{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.28);display:none}
+.drawer.open{display:block}
+.sheet{height:100%;width:min(470px,94vw);margin-left:auto;background:#fff;padding:26px;overflow:auto;box-shadow:-16px 0 40px rgba(0,0,0,.15)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.sheet h2{font-size:28px}
+.toc{display:grid;gap:8px}
+.toc button{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;text-align:left;padding:13px}
+.toc button.current{background:var(--teal-lt);border-color:var(--teal)}
+.note-block{background:var(--yellow-lt);border-radius:15px;padding:16px;margin:12px 0}
+.note-block h3{font-size:15px;margin-bottom:6px}
+.mini{font-size:13px;color:var(--gray)}
+.resume-banner{display:none;margin-bottom:18px;border-radius:15px;padding:15px 18px;background:var(--violet-lt)}
+.resume-banner.show{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr}.hero-art{min-height:300px}.hero-copy{padding:46px 32px}
+ .content{padding:38px 30px}.grid,.map{grid-template-columns:repeat(2,1fr)}
+ .stepper{grid-template-columns:1fr 1fr}.step:nth-child(2):after{display:none}
+ .progress{width:120px}.brand-txt span{display:none}
+}
+@media(max-width:620px){
+ .topbar-in{padding:9px 12px}.brand-txt strong{max-width:128px}.progress-wrap{display:none}
+ .shell{width:calc(100% - 16px);margin-top:10px}.panel{border-radius:17px}
+ .content{padding:28px 20px}.grid,.grid.two,.status-grid,.summary,.map,.stepper{grid-template-columns:1fr}
+ .step:after{display:none}.hero-copy{padding:34px 22px}.hero-art{padding:24px}
+ .people{gap:9px}.person{padding:12px;min-height:130px}
+ .persona{grid-template-columns:1fr;text-align:center}.navin{grid-template-columns:96px 1fr 96px;padding:8px 10px}
+ .navbtn{padding:10px 8px}.navcenter span{display:none}.iconbtn .label{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.resource-note{margin-top:10px}
+.atout-counter{margin-top:12px;font-size:13px;color:var(--gray);font-weight:700}
+.scale-list{display:grid;gap:12px}
+.scale-row{display:grid;grid-template-columns:minmax(190px,1fr) repeat(3,minmax(110px,.55fr));gap:8px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.scale-row>strong{font-size:14px}
+.scale-btn{border:1px solid var(--line);background:var(--off);padding:9px 8px;border-radius:10px;font-size:12px;font-weight:800}
+.scale-btn.selected{background:var(--night);color:#fff;border-color:var(--night)}
+.transform-demo{display:grid;grid-template-columns:.8fr auto 1.25fr;gap:18px;align-items:center;margin:26px 0}
+.transform-box{padding:22px;border-radius:18px;background:var(--off);min-height:150px}
+.transform-box.result{background:var(--teal-lt)}
+.transform-arrow{font-size:30px;font-weight:900;color:var(--teal)}
+.scenario-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+.scenario-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:900}
+.scenario-tab.active{background:var(--night);color:#fff;border-color:var(--night)}
+.scenario-form{display:grid;gap:18px}
+.scenario-field{padding:18px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.scenario-field label{margin-bottom:8px}
+.scenario-field .mini{margin-top:5px}
+.chipbox{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0}
+.chip{border:1px solid var(--line);background:var(--off);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}
+.chip:hover{background:var(--teal-lt)}
+.scenario-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.scenario-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff;min-height:170px}
+.scenario-card.empty{background:var(--off);border-style:dashed;color:var(--gray)}
+.scenario-card h3{font-size:18px;margin-bottom:8px}
+.scenario-card p{font-size:14px;margin:6px 0}
+.tagline{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--teal)}
+@media(max-width:760px){
+ .scale-row{grid-template-columns:1fr}
+ .transform-demo{grid-template-columns:1fr}
+ .transform-arrow{transform:rotate(90deg);text-align:center}
+ .scenario-summary{grid-template-columns:1fr}
+}
+
+
+.family{position:relative}
+.family .family-action{margin-top:16px;width:100%;border:0;border-radius:11px;padding:10px 12px;background:var(--off);font-weight:900;text-align:left}
+.family .family-action:hover{background:#e9e9e4}
+.family.active-family{box-shadow:0 0 0 3px var(--teal-lt),0 12px 25px rgba(45,45,45,.08)}
+.family-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.opportunity-toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0}
+.family-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:800}
+.family-tab.active{background:var(--night);color:#fff;border-color:var(--night)}
+.opportunity-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.opportunity-card{border:1px solid var(--line);border-radius:18px;padding:22px;background:#fff;display:flex;flex-direction:column;min-height:320px}
+.opportunity-card h3{font-size:21px;margin-bottom:10px}
+.opportunity-card .desc{color:#555}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900;margin-bottom:14px;width:max-content}
+.badge.ok{background:var(--teal-lt);color:#087878}
+.badge.check{background:var(--yellow-lt);color:#8a5d00}
+.badge.info{background:var(--violet-lt);color:#55458a}
+.context-box{background:var(--off);padding:14px;border-radius:12px;margin:13px 0;font-size:14px}
+.card-actions{margin-top:auto;display:flex;gap:8px;align-items:center}
+.add-piste{border:0;border-radius:12px;padding:11px 14px;background:var(--teal);color:#fff;font-weight:900}
+.add-piste.added{background:var(--night)}
+.pistes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.piste-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff;position:relative}
+.piste-card h3{font-size:18px;margin-bottom:7px}
+.remove-piste{position:absolute;right:12px;top:12px;border:0;border-radius:9px;background:var(--off);padding:6px 9px;font-weight:900}
+.empty-state{padding:26px;border:1.5px dashed #cfcfc8;border-radius:16px;text-align:center;background:var(--off);color:#666}
+
+.legal-box{background:#f6f4fb;border-left:4px solid var(--violet)}
+.legal-source{margin-top:10px;padding-top:10px;border-top:1px solid #ddd7ee;font-size:12px;color:var(--gray)}
+.legal-source a{color:#55458a;font-weight:900;text-decoration:none}
+.legal-source a:hover{text-decoration:underline}
+
+@media(max-width:760px){.opportunity-list,.pistes-grid{grid-template-columns:1fr}}
+
+
+.compare-intro{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.compare-principle{padding:18px;border-radius:16px;background:var(--off)}
+.compare-principle b{display:block;margin-bottom:6px}
+.matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.matrix-card{border:1px solid var(--line);border-radius:17px;background:#fff;padding:18px}
+.matrix-card h3{font-size:19px;margin-bottom:5px}
+.matrix-row{padding:14px 0;border-top:1px solid var(--line)}
+.matrix-row:first-of-type{border-top:0}
+.matrix-label{font-size:13px;font-weight:800;min-height:40px}
+.rating{display:flex;gap:5px;margin-top:9px}
+.rating button{width:34px;height:34px;border-radius:50%;border:1px solid #d4d4ce;background:var(--off);font-size:12px;font-weight:900}
+.rating button.selected{background:var(--teal);border-color:var(--teal);color:#fff}
+.rating-legend{display:flex;justify-content:space-between;font-size:10px;color:var(--gray);margin-top:4px}
+.reflection-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.reflection-choice{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:19px;text-align:left}
+.reflection-choice.selected{border-color:var(--teal);background:var(--teal-lt)}
+.horizon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.horizon{border-radius:18px;padding:20px;border:1px solid var(--line);background:#fff}
+.horizon:nth-child(1){border-top:6px solid var(--teal)}
+.horizon:nth-child(2){border-top:6px solid var(--yellow)}
+.horizon:nth-child(3){border-top:6px solid var(--violet)}
+.horizon h3{font-size:20px}
+.horizon textarea{min-height:120px}
+.case-layout{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:start}
+.case-photo{width:104px;height:104px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 9px 20px rgba(45,45,45,.11)}
+.case-options{display:grid;gap:10px;margin-top:20px}
+.case-option{border:1px solid var(--line);border-radius:13px;background:#fff;padding:14px;text-align:left}
+.case-option.selected{border-color:var(--teal);background:var(--teal-lt)}
+.case-option.correct{box-shadow:inset 4px 0 0 var(--teal)}
+.case-option.wrong{box-shadow:inset 4px 0 0 var(--salmon)}
+.eval-list{display:grid;gap:12px}
+.eval-row{display:grid;grid-template-columns:1fr repeat(3,135px);gap:8px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:14px}
+.eval-row strong{font-size:14px}
+.eval-btn{border:1px solid var(--line);border-radius:10px;background:var(--off);padding:9px;font-size:12px;font-weight:800}
+.eval-btn.selected{background:var(--night);color:#fff;border-color:var(--night)}
+.final-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:22px}
+.final-card{padding:19px;border-radius:16px;background:var(--off)}
+.final-card h3{font-size:16px;margin-bottom:8px}
+.final-card.wide{grid-column:1/-1}
+.next-doors{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.next-door{padding:18px;border-radius:15px;border:1px solid var(--line);background:#fff}
+.print-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.complete-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;background:var(--teal-lt);font-weight:900;color:#087878;margin-bottom:16px}
+@media(max-width:900px){
+ .matrix-grid,.compare-intro,.horizon-grid{grid-template-columns:1fr}
+ .eval-row{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .reflection-choices,.final-grid,.next-doors{grid-template-columns:1fr}
+ .case-layout{grid-template-columns:1fr;text-align:left}
+}
+
+
+.pedago-figure{margin:26px 0 28px;padding:0}
+.pedago-figure img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 10px 28px rgba(45,45,45,.07)}
+.pedago-figure figcaption{margin-top:10px;text-align:center;font-size:13px;color:var(--gray);font-weight:700}
+.visual-intro{display:flex;align-items:center;gap:10px;margin:8px 0 0;color:var(--gray);font-size:14px;font-weight:700}
+.visual-intro:before{content:"";width:28px;height:4px;border-radius:99px;background:var(--teal)}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="wordmark" aria-label="IFAP"><strong>IFAP</strong><i aria-hidden="true"></i></div>
+      <div class="brand-txt"><strong>Explorer mes possibilités d’évolution</strong><span>Version GitHub Pages · v0.7 · IFAP / LIANE</span></div>
+    </div>
+    <div class="progress-wrap" aria-label="Progression">
+      <div class="progress"><i id="progressBar"></i></div><span class="pct" id="pct">0 %</span>
+    </div>
+    <button class="iconbtn" id="btnToc" aria-label="Ouvrir le sommaire">☰ <span class="label">Sommaire</span></button>
+    <button class="iconbtn" id="btnNotebook" aria-label="Ouvrir mon carnet">▣ <span class="label">Mon carnet</span></button>
+    <button class="iconbtn" id="btnFull" aria-pressed="false">⛶ <span class="label">Plein écran</span></button>
+  </div>
+</header>
+
+<main class="shell">
+<div class="resume-banner" id="resumeBanner">
+  <div><strong>Votre progression a été retrouvée.</strong><div class="mini">Vos réponses de ce prototype sont enregistrées sur cet appareil.</div></div>
+  <button class="ghost" id="restart">Recommencer</button>
+</div>
+
+<section class="screen active" data-title="Accueil">
+<div class="panel hero">
+ <div class="hero-copy">
+  <div class="kicker">Évolution professionnelle</div>
+  <h1>Et si vous commenciez par explorer&nbsp;?</h1>
+  <p class="lead">Faire le point, découvrir les possibilités qui s’offrent à vous et identifier des pistes d’évolution réalistes.</p>
+  <div class="meta">
+   <span class="pill">◷ Environ 60 min</span><span class="pill">▣ Un carnet personnel</span><span class="pill">⇩ Une synthèse à la fin</span>
+  </div>
+  <p>Vous avez peut-être déjà une idée précise. Ou simplement l’envie que quelque chose change. <strong>Vous n’avez pas besoin d’avoir déjà un projet pour commencer.</strong></p>
+  <button class="primary" data-go="next">Commencer le parcours →</button>
+ </div>
+ <div class="hero-art" aria-label="Quatre profils d’agents publics illustrant différentes situations professionnelles">
+  <div class="people">
+   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva"><b>Maëva</b><small>« J’aimerais progresser. »</small></div>
+   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1700616466971-a4e05aa89e7d?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Mikaël"><b>Mikaël</b><small>« J’aimerais bouger. »</small></div>
+   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1581091870619-835cee86e759?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=1200" alt="Portrait photographique de Sonia"><b>Sonia</b><small>« J’ai envie d’autre chose. »</small></div>
+   <div class="person"><img class="avatar" src="https://images.unsplash.com/photo-1766066014773-0074bf4911de?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de David"><b>David</b><small>« Comment valoriser mon expérience ? »</small></div>
+  </div>
+  <p class="mini" style="position:relative;z-index:2;margin:18px 0 0;text-align:center">Portraits photographiques intégrés pour tester la direction visuelle des personas.</p>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Donner du sens">
+<div class="panel content">
+ <div class="kicker">Avant de chercher une solution</div>
+ <h2>Évoluer peut vouloir dire beaucoup de choses</h2>
+ <p class="sub">Une évolution professionnelle ne signifie pas nécessairement changer de métier, devenir cadre ou passer un concours.</p>
+ <figure class="pedago-figure">
+   <img src="assets/infographies/01_evoluer_plusieurs_directions.svg" alt="Infographie montrant six formes d’évolution autour du mot évoluer : apprendre, progresser, bouger, faire reconnaître son expérience, faire évoluer ses missions et se reconvertir.">
+   <figcaption>Une évolution professionnelle peut prendre plusieurs directions.</figcaption>
+ </figure>
+ <div class="visual-intro">Quelques exemples pour préciser ces différentes directions :</div>
+ <div class="grid">
+  <div class="choice"><b>Apprendre</b><span class="hint">Développer de nouvelles compétences ou une expertise.</span></div>
+  <div class="choice"><b>Faire évoluer mes missions</b><span class="hint">Prendre en charge de nouveaux sujets ou davantage d’autonomie.</span></div>
+  <div class="choice"><b>Bouger</b><span class="hint">Changer de poste, de service, d’employeur ou de lieu.</span></div>
+  <div class="choice"><b>Progresser</b><span class="hint">Explorer des responsabilités ou fonctions différentes.</span></div>
+  <div class="choice"><b>Faire reconnaître mon expérience</b><span class="hint">Valoriser ce que mon parcours m’a déjà permis d’acquérir.</span></div>
+  <div class="choice"><b>Me reconvertir</b><span class="hint">Préparer progressivement une transition plus importante.</span></div>
+ </div>
+ <div class="message"><strong>Le bon point de départ n’est pas « quel dispositif dois-je utiliser ? »</strong><br>Commencez par vous demander ce que vous aimeriez réellement voir évoluer.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Ma situation aujourd’hui">
+<div class="panel content">
+ <div class="kicker">Étape 1 · Ce que je recherche</div>
+ <h2>Peut-être vous reconnaissez-vous…</h2>
+ <p class="sub">Sélectionnez les phrases qui vous ressemblent aujourd’hui. Plusieurs réponses sont possibles.</p>
+ <div class="grid two multi" data-key="motivations">
+  <button class="choice">J’aime mon métier, mais j’aimerais progresser.</button>
+  <button class="choice">J’aimerais avoir davantage de responsabilités.</button>
+  <button class="choice">J’ai envie de nouvelles missions.</button>
+  <button class="choice">J’aimerais travailler dans un autre environnement.</button>
+  <button class="choice">Je pense à changer de métier.</button>
+  <button class="choice">J’envisage un concours ou un examen professionnel.</button>
+  <button class="choice">J’aimerais faire reconnaître mon expérience.</button>
+  <button class="choice">J’ai envie de changement, mais je ne sais pas encore lequel.</button>
+ </div>
+ <div class="message"><strong>Explorer fait partie de la démarche.</strong><br>Il n’est pas nécessaire d’avoir déjà un projet précis.</div>
+</div>
+</section>
+
+<section class="screen" data-title="La démarche">
+<div class="panel content">
+ <div class="kicker">Votre parcours</div>
+ <h2>Vous n’avez pas à décider tout de suite</h2>
+ <p class="sub">L’objectif est d’aboutir à deux ou trois pistes réalistes, pas de choisir aujourd’hui une nouvelle carrière.</p>
+ <div class="stepper">
+  <div class="step"><span class="n">1</span><b>Comprendre</b><div class="mini">Ce que je recherche.</div></div>
+  <div class="step"><span class="n">2</span><b>Explorer</b><div class="mini">Ce qui est possible.</div></div>
+  <div class="step"><span class="n">3</span><b>Construire</b><div class="mini">Mes scénarios.</div></div>
+  <div class="step"><span class="n">4</span><b>Agir</b><div class="mini">Mes prochaines démarches.</div></div>
+ </div>
+ <div class="message">À la fin, vous devriez pouvoir dire : <strong>« Voici les pistes qui méritent d’être explorées et ce que je dois faire pour les examiner sérieusement. »</strong></div>
+</div>
+</section>
+
+<section class="screen" data-title="Mes envies">
+<div class="panel content">
+ <div class="kicker">Étape 1 · Ce que je recherche</div>
+ <h2>Qu’aimeriez-vous voir évoluer&nbsp;?</h2>
+ <p class="sub">Avant de chercher comment évoluer, précisons ce que vous recherchez.</p>
+ <div class="grid multi" data-key="envies">
+  <button class="choice">Mes missions</button><button class="choice">Mes responsabilités</button>
+  <button class="choice">Mes compétences</button><button class="choice">Mon autonomie</button>
+  <button class="choice">Ma reconnaissance professionnelle</button><button class="choice">Mes perspectives de carrière</button>
+  <button class="choice">Ma rémunération</button><button class="choice">Mon métier</button>
+  <button class="choice">Mon poste</button><button class="choice">Mon environnement de travail</button>
+  <button class="choice">Mon employeur</button><button class="choice">Mon lieu d’exercice</button>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Ma projection">
+<div class="panel content">
+ <div class="kicker">Étape 1 · Ce que je recherche</div>
+ <h2>Et si vous regardiez un peu plus loin&nbsp;?</h2>
+ <p class="sub">Ne cherchez pas encore à savoir si votre projet est réalisable. Pour quelques instants, projetez-vous.</p>
+ <div class="field">
+  <label for="projection">Dans deux ou trois ans, qu’aimeriez-vous pouvoir dire de votre situation professionnelle&nbsp;?</label>
+  <textarea id="projection" maxlength="900" placeholder="Dans deux ou trois ans, j’aimerais…"></textarea>
+  <div class="counter"><span id="projectionCount">0</span>/900</div>
+ </div>
+ <div class="message"><strong>Besoin d’un point de départ ?</strong><br>Pensez à vos missions, vos responsabilités, vos compétences, votre environnement professionnel ou au métier que vous aimeriez exercer.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Mes priorités">
+<div class="panel content">
+ <div class="kicker">Étape 1 · Ce que je recherche</div>
+ <h2>Qu’est-ce qui compte le plus pour vous&nbsp;?</h2>
+ <p class="sub">Choisissez jusqu’à trois éléments. Ils serviront de boussole lorsque vous comparerez vos scénarios.</p>
+ <div class="grid multi max3" data-key="priorites">
+  <button class="choice">Apprendre</button><button class="choice">Être utile</button><button class="choice">Davantage de responsabilités</button>
+  <button class="choice">Gagner en autonomie</button><button class="choice">Devenir expert</button><button class="choice">Manager</button>
+  <button class="choice">Être reconnu</button><button class="choice">Améliorer mes perspectives</button><button class="choice">Améliorer ma situation financière</button>
+  <button class="choice">Préserver mon équilibre</button><button class="choice">Avoir plus de stabilité</button><button class="choice">Découvrir un nouvel environnement</button>
+ </div>
+ <p class="hint" id="prioHint">0 priorité sélectionnée sur 3.</p>
+</div>
+</section>
+
+<section class="screen" data-title="Objectif avant solution">
+<div class="panel content">
+ <div class="kicker">Un premier réflexe</div>
+ <div class="persona">
+  <div class="portrait"><img src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva"></div>
+  <div><h3>Maëva aimerait progresser</h3><p>Elle souhaite exercer davantage de responsabilités. Sa première idée est : <strong>« Il faut que je passe un concours. »</strong></p></div>
+ </div>
+ <h3 style="margin-top:26px">Est-ce nécessairement la première question à se poser&nbsp;?</h3>
+ <div class="quiz" id="maevaQuiz">
+  <button class="choice" data-answer="bad">Oui. Le concours est la voie normale pour évoluer.</button>
+  <button class="choice" data-answer="good">Non. Elle doit d’abord préciser les fonctions et responsabilités qu’elle aimerait exercer.</button>
+ </div>
+ <div class="feedback" id="maevaFeedback"></div>
+</div>
+</section>
+
+<section class="screen" data-title="Mon statut">
+<div class="panel content">
+ <div class="kicker">Étape 2 · Mon point de départ</div>
+ <h2>Quelle est votre situation aujourd’hui&nbsp;?</h2>
+ <p class="sub">Certaines possibilités d’évolution dépendent de votre situation administrative. Cette information permettra d’adapter les repères présentés ensuite.</p>
+ <div class="status-grid" id="statusGrid">
+  <button class="status" data-status="titulaire"><b>Fonctionnaire titulaire</b><div class="mini">Je suis titularisé dans un corps ou cadre d’emplois.</div></button>
+  <button class="status" data-status="stagiaire"><b>Fonctionnaire stagiaire</b><div class="mini">Je suis en période de stage avant titularisation.</div></button>
+  <button class="status" data-status="cdi"><b>Agent contractuel de droit public (ACDP) en CDI</b><div class="mini">Mon contrat est à durée indéterminée.</div></button>
+  <button class="status" data-status="cdd"><b>Agent contractuel de droit public (ACDP) en CDD</b><div class="mini">Mon contrat est à durée déterminée.</div></button>
+  <button class="status" data-status="inconnu"><b>Je ne sais pas précisément</b><div class="mini">Je pourrai poursuivre et vérifier cette information plus tard.</div></button>
+ </div>
+ <div class="message" id="statusMessage"><strong>Pourquoi cette question ?</strong><br>Le module ne supposera pas que les mêmes dispositifs s’appliquent de la même façon à tous les agents. Les agents contractuels recrutés par les employeurs publics relèvent du régime des agents contractuels de droit public (ACDP). <a href="https://drhfpnc.gouv.nc/node/1358" target="_blank" rel="noopener noreferrer">Voir les repères officiels ACDP ↗</a></div>
+</div>
+</section>
+
+<section class="screen" data-title="Mon environnement">
+<div class="panel content">
+ <div class="kicker">Étape 2 · Mon point de départ</div>
+ <h2>Quelques repères sur votre situation</h2>
+ <p class="sub">Renseignez seulement ce que vous connaissez. Ces informations servent à donner du contexte à votre carnet, pas à constituer un dossier administratif.</p>
+ <div class="field"><label for="fonction">Quel est votre métier ou votre fonction actuelle&nbsp;?</label><input type="text" id="fonction" placeholder="Ex. gestionnaire, agent technique, chargé de mission…"></div>
+ <div class="field"><label for="employeur">Pour quel employeur travaillez-vous&nbsp;?</label><input type="text" id="employeur" placeholder="Ex. province, commune, établissement public…"></div>
+ <div class="grid two">
+   <div class="field"><label for="anciennete">Ancienneté approximative</label>
+   <select id="anciennete" style="width:100%;padding:14px;border:1.5px solid #d8d8d2;border-radius:14px"><option value="">Je préfère ne pas préciser</option><option>Moins d’un an</option><option>1 à 3 ans</option><option>4 à 7 ans</option><option>8 ans ou plus</option></select></div>
+   <div class="field"><label for="categorie">Catégorie ou niveau, si connu</label>
+   <select id="categorie" style="width:100%;padding:14px;border:1.5px solid #d8d8d2;border-radius:14px"><option value="">Je ne sais pas / je ne précise pas</option><option>A</option><option>B</option><option>C</option><option>Autre</option></select></div>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Mon point de départ">
+<div class="panel content">
+ <div class="kicker">Première synthèse</div>
+ <h2>Voici votre point de départ</h2>
+ <p class="sub">Vous pourrez revenir modifier ces éléments à tout moment.</p>
+ <div class="summary">
+  <div class="sumcard"><h3>Ma situation</h3><div id="sumSituation">À compléter</div></div>
+  <div class="sumcard"><h3>Ce que j’aimerais faire évoluer</h3><div id="sumEnvies">À compléter</div></div>
+  <div class="sumcard"><h3>Ma projection</h3><div id="sumProjection">À compléter</div></div>
+  <div class="sumcard"><h3>Mes priorités</h3><div id="sumPriorites">À compléter</div></div>
+ </div>
+ <div class="message"><strong>Vous avez posé votre point de départ.</strong><br>La suite va maintenant élargir le champ des possibles avant de vous demander de construire des scénarios.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Carte des possibilités">
+<div class="panel content">
+ <div class="kicker">Étape 3 · Mes possibilités</div>
+ <h2>Il existe plusieurs façons d’évoluer</h2>
+ <p class="sub">Commencez par regarder l’ensemble du paysage. Vous pourrez ensuite entrer dans chaque famille et ajouter à votre carnet les pistes qui vous intéressent.</p>
+ <figure class="pedago-figure">
+   <img src="assets/infographies/02_carte_5_familles_evolution.svg" alt="Carte des cinq familles d’évolution professionnelle : faire évoluer ce que je fais, bouger, progresser ou accéder, faire reconnaître mes acquis, préparer une transition.">
+   <figcaption>Le projet est au centre ; les dispositifs et possibilités viennent ensuite.</figcaption>
+ </figure>
+ <div class="visual-intro">Explorez maintenant les cinq familles :</div>
+ <div class="map" id="familyMap">
+  <div class="family" data-family="evoluer"><span class="family-tag">01</span><h3>Faire évoluer ce que je fais</h3><ul><li>compétences</li><li>missions</li><li>expertise</li><li>responsabilités</li></ul><button class="family-action" data-open-family="evoluer">Explorer cette famille →</button></div>
+  <div class="family" data-family="bouger"><span class="family-tag">02</span><h3>Bouger</h3><ul><li>poste</li><li>service</li><li>employeur</li><li>lieu</li><li>métier</li></ul><button class="family-action" data-open-family="bouger">Explorer cette famille →</button></div>
+  <div class="family" data-family="progresser"><span class="family-tag">03</span><h3>Progresser ou accéder</h3><ul><li>avancement</li><li>changement de corps</li><li>examen</li><li>concours</li><li>SPI si éligible</li></ul><button class="family-action" data-open-family="progresser">Explorer cette famille →</button></div>
+  <div class="family" data-family="reconnaitre"><span class="family-tag">04</span><h3>Faire reconnaître mes acquis</h3><ul><li>formation</li><li>certification</li><li>VAE</li></ul><button class="family-action" data-open-family="reconnaitre">Explorer cette famille →</button></div>
+  <div class="family" data-family="transition"><span class="family-tag">05</span><h3>Préparer une transition</h3><ul><li>reconversion</li><li>détachement</li><li>mise à disposition</li><li>disponibilité</li><li>sortie de la fonction publique</li></ul><button class="family-action" data-open-family="transition">Explorer cette famille →</button></div>
+ </div>
+ <div class="message"><strong>Comment lire cette carte ?</strong> Les possibilités qui ne correspondent pas directement à votre statut ne sont pas systématiquement masquées : elles peuvent rester visibles à titre d’information. Pour toute démarche ayant un effet sur votre situation administrative, vérifiez les conditions à jour et votre situation individuelle auprès de votre service RH.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Explorer les possibilités">
+<div class="panel content">
+ <div class="kicker">Étape 3 · Mes possibilités</div>
+ <h2 id="familyTitle">Explorer les possibilités</h2>
+ <p class="sub" id="familyIntro">Choisissez une famille puis découvrez les possibilités qui peuvent mériter une exploration plus approfondie.</p>
+ <div class="opportunity-toolbar" id="familyTabs">
+   <button class="family-tab" data-family-tab="evoluer">Faire évoluer ce que je fais</button>
+   <button class="family-tab" data-family-tab="bouger">Bouger</button>
+   <button class="family-tab" data-family-tab="progresser">Progresser ou accéder</button>
+   <button class="family-tab" data-family-tab="reconnaitre">Faire reconnaître mes acquis</button>
+   <button class="family-tab" data-family-tab="transition">Préparer une transition</button>
+ </div>
+ <div class="message" id="profileReminder"><strong>Repère personnalisé :</strong><br>Choisissez votre statut à l’étape précédente pour obtenir des indications plus adaptées.</div>
+ <div class="opportunity-list" id="opportunityList"></div>
+</div>
+</section>
+<section class="screen" data-title="Mes pistes à explorer">
+<div class="panel content">
+ <div class="kicker">Étape 3 · Mes possibilités</div>
+ <h2>Mes pistes à explorer</h2>
+ <p class="sub">Vous n’avez pas besoin de tout envisager. Conservez ici les possibilités qui méritent, selon vous, d’être étudiées plus sérieusement.</p>
+ <div id="pistesList"></div>
+ <div class="message"><strong>Repère :</strong> trois à cinq pistes constituent généralement un bon point de départ. Ce n’est pas une règle bloquante.</div>
+</div>
+</section>
+
+
+<section class="screen" data-title="Mes ressources">
+<div class="panel content">
+ <div class="kicker">Étape 4 · Mes ressources</div>
+ <h2>Vous ne partez pas de zéro</h2>
+ <p class="sub">Un projet d’évolution se construit aussi à partir de ce que votre parcours vous a déjà permis d’acquérir.</p>
+ <div class="grid multi" data-key="ressources">
+   <button class="choice">Mon expérience professionnelle</button>
+   <button class="choice">Mes compétences techniques</button>
+   <button class="choice">Mes compétences relationnelles</button>
+   <button class="choice">Ma connaissance de mon environnement professionnel</button>
+   <button class="choice">Mes diplômes ou certifications</button>
+   <button class="choice">Les responsabilités déjà exercées</button>
+   <button class="choice">Mes réalisations</button>
+   <button class="choice">Ma capacité à apprendre</button>
+   <button class="choice">Mon réseau professionnel</button>
+   <button class="choice">Des expériences extraprofessionnelles utiles</button>
+ </div>
+ <div class="field resource-note">
+   <label for="ressourceLibre">Une expérience, une réussite ou une ressource sur laquelle vous pourriez particulièrement vous appuyer</label>
+   <textarea id="ressourceLibre" maxlength="650" placeholder="Ex. j’ai déjà coordonné un projet transversal ; je connais très bien le fonctionnement de mon secteur…"></textarea>
+   <div class="counter"><span id="ressourceCount">0</span>/650</div>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Mes trois atouts">
+<div class="panel content">
+ <div class="kicker">Étape 4 · Mes ressources</div>
+ <h2>Quels sont vos trois principaux atouts&nbsp;?</h2>
+ <p class="sub">Retenez les trois ressources qui pourraient le plus vous aider dans une évolution professionnelle.</p>
+ <div id="atoutsChoices" class="grid"></div>
+ <div class="atout-counter" id="atoutCounter">0 atout sélectionné sur 3.</div>
+ <div class="message"><strong>Il n’y a pas de « bon » trio.</strong><br>Choisissez ce qui vous paraît réellement mobilisable dans votre situation.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Mes contraintes">
+<div class="panel content">
+ <div class="kicker">Étape 5 · Ce dont je dois tenir compte</div>
+ <h2>De quoi votre projet devra-t-il tenir compte&nbsp;?</h2>
+ <p class="sub">Identifier une contrainte ne signifie pas renoncer. Cela permet de construire un scénario réaliste.</p>
+ <div class="scale-list" id="constraintList"></div>
+ <div class="field">
+  <label for="contrainteLibre">Autre élément à prendre en compte</label>
+  <input type="text" id="contrainteLibre" placeholder="Ex. calendrier personnel, engagement associatif, transport…">
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="De la piste au scénario">
+<div class="panel content">
+ <div class="kicker">Étape 6 · Mes scénarios</div>
+ <h2>Une piste n’est pas encore un scénario</h2>
+ <p class="sub">Un scénario devient utile lorsqu’il relie un objectif, une voie possible et des premières actions à vérifier.</p>
+ <figure class="pedago-figure">
+   <img src="assets/infographies/03_envie_piste_scenario_action.svg" alt="Schéma en quatre étapes : mon envie, une piste, un scénario, puis ma première action.">
+   <figcaption>Le dispositif n’est qu’une hypothèse de voie : c’est le scénario qui le relie à votre objectif.</figcaption>
+ </figure>
+ <div class="message"><strong>Votre objectif maintenant :</strong><br>construire au moins un scénario. Vous pourrez en créer jusqu’à trois pour comparer plusieurs chemins.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Construire mes scénarios">
+<div class="panel content">
+ <div class="kicker">Étape 6 · Mes scénarios</div>
+ <h2>Construisez vos scénarios</h2>
+ <p class="sub">Réutilisez les éléments déjà identifiés. Les propositions sous les champs vous évitent de repartir d’une page blanche.</p>
+ <div class="scenario-tabs">
+   <button class="scenario-tab active" data-scenario-tab="0">Scénario 1</button>
+   <button class="scenario-tab" data-scenario-tab="1">Scénario 2</button>
+   <button class="scenario-tab" data-scenario-tab="2">Scénario 3</button>
+ </div>
+ <div id="scenarioEditor"></div>
+ <div class="scenario-summary" id="scenarioSummary"></div>
+</div>
+</section>
+
+
+<section class="screen" data-title="Comparer mes scénarios">
+<div class="panel content">
+ <div class="kicker">Étape 7 · Comparer</div>
+ <h2>Regardez vos scénarios sous plusieurs angles</h2>
+ <p class="sub">Il ne s’agit pas de trouver mathématiquement le « meilleur » scénario. Vous allez simplement observer ce qui les distingue.</p>
+ <div class="compare-intro">
+  <div class="compare-principle"><b>Pas de score global</b><span class="mini">Le module ne calcule pas de scénario gagnant.</span></div>
+  <div class="compare-principle"><b>Votre situation compte</b><span class="mini">Une piste attractive peut demander plus de temps ou de préparation.</span></div>
+  <div class="compare-principle"><b>Votre envie compte aussi</b><span class="mini">Un scénario accessible n’est pas forcément celui que vous souhaitez poursuivre.</span></div>
+ </div>
+ <div class="message"><strong>Six questions guideront votre comparaison :</strong><br>correspond-il à ce que je recherche ? puis-je m’appuyer sur mes acquis ? est-il accessible ? l’investissement est-il réaliste ? est-il compatible avec mes contraintes ? ai-je envie de continuer à l’explorer ?</div>
+</div>
+</section>
+
+<section class="screen" data-title="Ma matrice de comparaison">
+<div class="panel content">
+ <div class="kicker">Étape 7 · Comparer</div>
+ <h2>Ma matrice de comparaison</h2>
+ <p class="sub">Pour chaque scénario construit, positionnez-vous de 1 à 5. Les appréciations restent séparées : aucun total ne sera calculé.</p>
+ <div id="matrixArea"></div>
+ <div class="field">
+  <label for="compareObservation">Que remarquez-vous en regardant vos scénarios côte à côte&nbsp;?</label>
+  <textarea id="compareObservation" maxlength="800" placeholder="Ex. une piste m’attire davantage, mais elle demande plus de préparation…"></textarea>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Où en suis-je ?">
+<div class="panel content">
+ <div class="kicker">Étape 7 · Comparer</div>
+ <h2>Où en êtes-vous maintenant&nbsp;?</h2>
+ <p class="sub">Il n’est pas nécessaire d’avoir choisi. Sélectionnez simplement la phrase qui décrit le mieux votre réflexion actuelle.</p>
+ <div class="reflection-choices" id="reflectionChoices">
+  <button class="reflection-choice" data-reflection="Une piste commence à se préciser."><strong>Une piste commence à se préciser.</strong><div class="mini">J’ai envie de l’explorer plus sérieusement.</div></button>
+  <button class="reflection-choice" data-reflection="Plusieurs scénarios restent intéressants."><strong>Plusieurs scénarios restent intéressants.</strong><div class="mini">Je préfère encore comparer et enquêter.</div></button>
+  <button class="reflection-choice" data-reflection="J’ai encore besoin d’explorer."><strong>J’ai encore besoin d’explorer.</strong><div class="mini">Il me manque des informations ou des idées.</div></button>
+  <button class="reflection-choice" data-reflection="J’ai découvert une possibilité à laquelle je n’avais pas pensé."><strong>J’ai découvert une nouvelle possibilité.</strong><div class="mini">Le parcours a élargi mon champ des possibles.</div></button>
+ </div>
+ <div class="message"><strong>Toutes ces situations constituent une avancée.</strong><br>Ce module ne vous demande pas de prendre une décision aujourd’hui.</div>
+</div>
+</section>
+
+<section class="screen" data-title="Mes trois horizons">
+<div class="panel content">
+ <div class="kicker">Étape 7 · Passer à l’action</div>
+ <h2>Que pouvez-vous faire à partir de maintenant&nbsp;?</h2>
+ <p class="sub">Une évolution peut demander du temps. Votre première action, elle, peut souvent être très concrète.</p>
+ <figure class="pedago-figure">
+   <img src="assets/infographies/04_trois_horizons.svg" alt="Frise en trois étapes : maintenant, prochains mois et plus tard.">
+   <figcaption>Tout n’a pas besoin d’être engagé en même temps.</figcaption>
+ </figure>
+ <div class="horizon-grid">
+  <div class="horizon">
+   <div class="tagline">Maintenant</div>
+   <h3>Dans les prochaines semaines</h3>
+   <textarea id="actionMaintenant" maxlength="500" placeholder="Ex. consulter deux fiches emploi, demander un échange, vérifier une condition…"></textarea>
+  </div>
+  <div class="horizon">
+   <div class="tagline">Prochains mois</div>
+   <h3>Ce que je peux préparer</h3>
+   <textarea id="actionMois" maxlength="500" placeholder="Ex. suivre une formation, rencontrer un professionnel, préparer une candidature…"></textarea>
+  </div>
+  <div class="horizon">
+   <div class="tagline">Plus tard</div>
+   <h3>Ce que je peux construire</h3>
+   <textarea id="actionLongTerme" maxlength="500" placeholder="Ex. changer de métier, préparer un concours, envisager une mobilité importante…"></textarea>
+  </div>
+ </div>
+</div>
+</section>
+
+<section class="screen" data-title="Situation Maëva">
+<div class="panel content">
+ <div class="kicker">Étape 8 · Vérifier mon raisonnement</div>
+ <div class="case-layout">
+  <img class="case-photo" src="https://images.unsplash.com/photo-1573164713712-03790a178651?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de Maëva">
+  <div><h2>Que conseilleriez-vous à Maëva&nbsp;?</h2><p>Maëva souhaite davantage de responsabilités. Elle trouve l’annonce d’un concours de catégorie supérieure et décide immédiatement de commencer à réviser.</p></div>
+ </div>
+ <p class="sub" style="margin-top:22px">Sélectionnez les démarches qu’elle aurait intérêt à réaliser avant de s’engager pleinement dans la préparation.</p>
+ <div class="case-options" id="caseMaeva">
+  <button class="case-option" data-case="maeva" data-correct="1">Identifier précisément les fonctions qu’elle souhaite exercer.</button>
+  <button class="case-option" data-case="maeva" data-correct="1">Vérifier ce que le concours envisagé permet réellement d’atteindre.</button>
+  <button class="case-option" data-case="maeva" data-correct="1">Examiner d’autres voies possibles pour atteindre le même objectif.</button>
+  <button class="case-option" data-case="maeva" data-correct="1">Vérifier les conditions d’accès et les épreuves du concours.</button>
+  <button class="case-option" data-case="maeva" data-correct="0">Commencer immédiatement par apprendre tout le programme, sans autre vérification.</button>
+ </div>
+ <button class="primary" style="margin-top:18px" data-validate-case="maeva">Valider mes choix</button>
+ <div class="feedback" id="caseMaevaFeedback"></div>
+</div>
+</section>
+
+<section class="screen" data-title="Situation David">
+<div class="panel content">
+ <div class="kicker">Étape 8 · Vérifier mon raisonnement</div>
+ <div class="case-layout">
+  <img class="case-photo" src="https://images.unsplash.com/photo-1766066014773-0074bf4911de?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200" alt="Portrait photographique de David">
+  <div><h2>Et pour David&nbsp;?</h2><p>David souhaite accéder à une activité proche de fonctions qu’il exerce déjà depuis plusieurs années. Il pense devoir reprendre une formation complète.</p></div>
+ </div>
+ <p class="sub" style="margin-top:22px">Que pourrait-il vérifier avant de repartir de zéro&nbsp;?</p>
+ <div class="case-options" id="caseDavid">
+  <button class="case-option" data-case="david" data-correct="1">Les compétences qu’il possède déjà.</button>
+  <button class="case-option" data-case="david" data-correct="1">Les qualifications réellement nécessaires pour le métier visé.</button>
+  <button class="case-option" data-case="david" data-correct="1">La possibilité d’une VAE.</button>
+  <button class="case-option" data-case="david" data-correct="1">Les formations complémentaires réellement nécessaires.</button>
+  <button class="case-option" data-case="david" data-correct="0">Rien : une évolution professionnelle suppose toujours de repartir de zéro.</button>
+ </div>
+ <button class="primary" style="margin-top:18px" data-validate-case="david">Valider mes choix</button>
+ <div class="feedback" id="caseDavidFeedback"></div>
+</div>
+</section>
+
+<section class="screen" data-title="Mon autoévaluation">
+<div class="panel content">
+ <div class="kicker">Étape 8 · Faire le point</div>
+ <h2>Ce que je sais désormais faire</h2>
+ <p class="sub">Cette autoévaluation ne produit aucun score. Elle vous aide simplement à voir ce qui s’est clarifié.</p>
+ <div class="eval-list" id="selfEval"></div>
+</div>
+</section>
+
+<section class="screen" data-title="Ma synthèse finale">
+<div class="panel content">
+ <div class="complete-badge">✓ Parcours d’exploration terminé</div>
+ <h2>Votre réflexion a déjà pris forme</h2>
+ <p class="sub">Cette synthèse rassemble ce que vous avez construit. Elle ne constitue pas une décision définitive : elle sert à poursuivre votre réflexion et vos démarches.</p>
+ <div class="final-grid" id="finalSummary"></div>
+ <div id="orientationDoors"></div>
+ <div class="print-actions">
+  <button class="primary" id="btnPrintNotebook">Imprimer / enregistrer mon carnet en PDF</button>
+  <button class="ghost" id="btnOpenNotebookFinal">Voir mon carnet</button>
+ </div>
+</div>
+</section>
+
+</main>
+
+<nav class="navbar" aria-label="Navigation dans le module">
+ <div class="navin">
+  <button class="navbtn" id="prev">← Précédent</button>
+  <div class="navcenter"><b id="navTitle">Accueil</b><span id="navPos">Écran 1 sur 12</span></div>
+  <button class="navbtn next" id="next">Suivant →</button>
+ </div>
+</nav>
+
+<div class="drawer" id="tocDrawer" aria-hidden="true">
+ <aside class="sheet" role="dialog" aria-modal="true" aria-label="Sommaire">
+  <div class="sheet-head"><h2>Sommaire</h2><button class="iconbtn close">✕</button></div>
+  <div class="toc" id="tocList"></div>
+ </aside>
+</div>
+
+<div class="drawer" id="noteDrawer" aria-hidden="true">
+ <aside class="sheet" role="dialog" aria-modal="true" aria-label="Mon carnet">
+  <div class="sheet-head"><div><div class="kicker">Carnet personnel</div><h2>Mon carnet</h2></div><button class="iconbtn close">✕</button></div>
+  <p class="mini">Dans ce prototype, vos réponses sont enregistrées uniquement dans le stockage local de ce navigateur.</p>
+  <div id="notebookContent"></div>
+ </aside>
+</div>
+
+<div class="sr" id="live" aria-live="polite"></div>
+<script>
+(function(){
+ const screens=[...document.querySelectorAll('.screen')], key='ifap_evolution_proto_v1';
+ let state={screen:0,motivations:[],envies:[],priorites:[],projection:'',statut:'',fonction:'',employeur:'',anciennete:'',categorie:'',selectedFamily:'evoluer',pistes:[],ressources:[],ressourceLibre:'',atouts:[],contraintes:{},contrainteLibre:'',activeScenario:0,scenarios:[{objectif:'',piste:'',interet:'',atouts:[],aVerifier:'',contraintes:[],premiereAction:''},{objectif:'',piste:'',interet:'',atouts:[],aVerifier:'',contraintes:[],premiereAction:''},{objectif:'',piste:'',interet:'',atouts:[],aVerifier:'',contraintes:[],premiereAction:''}],comparaison:{},compareObservation:'',etatReflexion:'',actionMaintenant:'',actionMois:'',actionLongTerme:'',caseMaeva:[],caseDavid:[],selfEval:{}};
+ try{const x=JSON.parse(localStorage.getItem(key));if(x)state=Object.assign(state,x)}catch(e){}
+
+ const opportunities={
+  evoluer:[
+   {id:'competences',title:'Développer mes compétences',desc:'Acquérir de nouvelles compétences, approfondir une expertise ou préparer progressivement une future évolution.',start:'Comparer les compétences attendues dans la situation visée avec celles que vous maîtrisez déjà.'},
+   {id:'missions',title:'Faire évoluer mes missions',desc:'Enrichir votre activité, prendre en charge de nouveaux sujets ou développer progressivement de nouvelles responsabilités.',start:'Échanger sur les perspectives du service et identifier ce qui pourrait évoluer dans votre activité.'},
+   {id:'expertise',title:'Développer une expertise',desc:'Devenir une personne ressource dans un domaine sans nécessairement évoluer vers des fonctions d’encadrement.',start:'Identifier un domaine dans lequel vous souhaitez devenir davantage reconnu ou autonome.'},
+   {id:'responsabilites',title:'Prendre davantage de responsabilités',desc:'Élargir votre périmètre, coordonner, piloter ou exercer des fonctions comportant un niveau de responsabilité supérieur.',start:'Préciser d’abord le type de responsabilités que vous aimeriez exercer.'}
+  ],
+  bouger:[
+   {id:'poste',title:'Changer de poste',desc:'Occuper un autre emploi correspondant davantage à vos aspirations ou à vos compétences.',start:'Observer des postes qui vous intéressent et repérer les compétences demandées.'},
+   {id:'service',title:'Changer de service',desc:'Découvrir un autre environnement tout en conservant éventuellement un métier proche de votre activité actuelle.',start:'Identifier les services dans lesquels vos compétences pourraient être utiles.'},
+   {id:'employeur',title:'Changer d’employeur public',desc:'Explorer des opportunités auprès d’un autre employeur public de Nouvelle-Calédonie.',start:'Regarder les opportunités publiées et comparer les conditions d’exercice.'},
+   {id:'lieu',title:'Changer de lieu d’exercice',desc:'Intégrer une dimension géographique à votre projet professionnel.',start:'Identifier les lieux compatibles avec vos contraintes personnelles et professionnelles.'},
+   {id:'metier',title:'Changer de métier',desc:'Préparer une transition vers une activité professionnelle différente.',start:'Commencer par explorer le ou les métiers qui vous attirent avant de choisir une voie d’accès.'}
+  ],
+  progresser:[
+   {id:'avancement',title:'Explorer mes possibilités d’avancement',desc:'Pour un fonctionnaire, la carrière peut comporter des avancements d’échelon, de classe ou de grade. Les conditions précises dépendent notamment du statut particulier du corps ou cadre d’emplois.',start:'Vérifier votre situation individuelle et les règles applicables à votre corps ou cadre d’emplois.'},
+   {id:'corps',title:'Changer de corps ou de cadre d’emplois',desc:'Accéder à un autre corps ou cadre d’emplois lorsque les conditions réglementaires le permettent.',start:'Identifier d’abord les fonctions visées puis les voies d’accès correspondantes.'},
+   {id:'examen',title:'Passer un examen professionnel',desc:'Utiliser un examen professionnel lorsqu’il constitue une voie adaptée à votre situation et au corps visé.',start:'Vérifier les conditions d’accès et ce que l’examen permet réellement d’atteindre.'},
+   {id:'concours',title:'Passer un concours',desc:'Accéder à certaines fonctions ou corps par la voie d’un concours correspondant à votre projet.',start:'Clarifier les fonctions visées avant de choisir le concours à préparer.'},
+   {id:'spi',title:'Vérifier mon éligibilité à une SPI',desc:'Pour certains agents contractuels et certaines campagnes, une sélection professionnelle d’intégration peut constituer une voie à examiner.',start:'Vérifier votre éligibilité dans la campagne en cours avant toute démarche.'}
+  ],
+  reconnaitre:[
+   {id:'formation',title:'Me former',desc:'Acquérir les compétences qui vous manquent ou approfondir celles que vous possédez déjà.',start:'Identifier précisément ce que la formation doit vous permettre de faire ensuite.'},
+   {id:'certification',title:'Obtenir une certification ou un diplôme',desc:'Faire reconnaître un niveau ou une qualification utile à votre projet.',start:'Vérifier la qualification réellement attendue pour le projet visé.'},
+   {id:'vae',title:'Explorer la VAE',desc:'Examiner si votre expérience peut contribuer à l’obtention de tout ou partie d’une certification.',start:'Identifier une certification cohérente avec votre expérience et votre objectif.'}
+  ],
+  transition:[
+   {id:'reconversion',title:'Préparer une reconversion',desc:'Construire progressivement un changement important de métier ou de domaine professionnel.',start:'Explorer le métier visé, vos compétences transférables et les écarts à combler.'},
+   {id:'detachement',title:'Explorer un détachement',desc:'Le détachement place le fonctionnaire hors de son cadre d’origine tout en lui permettant de continuer à bénéficier, dans ce cadre, de ses droits à l’avancement et à la retraite.',start:'Vérifier le cas de détachement applicable, les conditions et les conséquences avec votre service RH.'},
+   {id:'mise_disposition',title:'Explorer une mise à disposition',desc:'La mise à disposition permet à un fonctionnaire de rester dans son corps d’origine et sur son emploi permanent tout en effectuant son service hors de son administration d’origine, dans les conditions prévues par les textes.',start:'Vérifier si cette modalité correspond à votre projet et si elle peut être organisée entre les employeurs ou organismes concernés.'},
+   {id:'disponibilite',title:'Explorer une disponibilité',desc:'La disponibilité place le fonctionnaire hors de son administration ou service d’origine. Elle entraîne en principe la cessation des droits à l’avancement et comporte des effets sur la retraite, avec des dérogations prévues par les textes.',start:'Mesurer précisément les conséquences administratives, financières et sur la retraite avant toute décision.'},
+   {id:'rupture',title:'Envisager une rupture conventionnelle',desc:'Dans des conditions strictes, un fonctionnaire titulaire peut convenir avec son employeur d’une rupture mettant fin à sa carrière dans la fonction publique de Nouvelle-Calédonie. Il s’agit d’une sortie de la fonction publique, pas d’une mobilité.',start:'N’explorer cette voie qu’après avoir vérifié les conditions d’éligibilité, les conséquences de la radiation et l’interdiction temporaire de recrutement dans le secteur public.'}
+  ]
+ };
+
+ const legalVerified='15/09/2026';
+ const legalMeta={
+   avancement:{title:'Statut général des fonctionnaires',detail:'Articles 46 à 48 de l’arrêté n° 1065 du 22 août 1953 : avancement d’échelon, de classe et de grade ; passage à une catégorie supérieure selon les règles de recrutement.',url:'https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/763FB53497BEC5AC4B2574CE007821F8/$File/Arr%C3%AAt%C3%A9_1065_du_22-08-1953_ChG%20-%20M%C3%A0J%201.11.24%20FAIT.docx.pdf?OpenElement='},
+   concours:{title:'DRHFPNC – concours et examens',detail:'Les voies et conditions dépendent de la session ouverte. Les concours internes et examens professionnels sont réservés aux fonctionnaires ; les autres voies dépendent des conditions de chaque concours.',url:'https://drhfpnc.gouv.nc/node/6'},
+   examen:{title:'DRHFPNC – concours et examens',detail:'Les examens professionnels sont à examiner uniquement lorsqu’une session est ouverte et que les conditions propres à cette session sont remplies.',url:'https://drhfpnc.gouv.nc/node/6'},
+   spi:{title:'DRHFPNC – sélections professionnelles d’intégration 2026',detail:'Les SPI sont ouvertes aux agents contractuels exerçant auprès d’un employeur public et remplissant les conditions de la campagne d’intégration en cours.',url:'https://drhfpnc.gouv.nc/concours-et-examens/calendrier-et-resultats-des-integrations-de-lannee'},
+   detachement:{title:'Statut général des fonctionnaires',detail:'Articles 75 à 77 de l’arrêté n° 1065 du 22 août 1953 : définition du détachement et cas dans lesquels il peut intervenir.',url:'https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/763FB53497BEC5AC4B2574CE007821F8/$File/Arr%C3%AAt%C3%A9_1065_du_22-08-1953_ChG%20-%20M%C3%A0J%201.11.24%20FAIT.docx.pdf?OpenElement='},
+   mise_disposition:{title:'Statut général des fonctionnaires',detail:'Articles 90-1 et 90-2 de l’arrêté n° 1065 du 22 août 1953 : accord du fonctionnaire, nécessité de service et convention entre l’administration d’origine et l’organisme d’accueil.',url:'https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/763FB53497BEC5AC4B2574CE007821F8/$File/Arr%C3%AAt%C3%A9_1065_du_22-08-1953_ChG%20-%20M%C3%A0J%201.11.24%20FAIT.docx.pdf?OpenElement='},
+   disponibilite:{title:'Statut général des fonctionnaires',detail:'Articles 91 à 98-1 de l’arrêté n° 1065 du 22 août 1953. L’article 91 prévoit une cessation de principe des droits à l’avancement et à la retraite, avec une dérogation concernant certains droits pour la liquidation de la pension pendant une durée maximale de quatre ans.',url:'https://juridoc.gouv.nc/juridoc/jdtextes.nsf/(web-All)/763FB53497BEC5AC4B2574CE007821F8/$File/Arr%C3%AAt%C3%A9_1065_du_22-08-1953_ChG%20-%20M%C3%A0J%201.11.24%20FAIT.docx.pdf?OpenElement='},
+   rupture:{title:'DRHFPNC – rupture conventionnelle',detail:'Dispositif ouvert aux fonctionnaires titulaires remplissant les conditions, notamment une ancienneté minimale de 5 ans en cette qualité. Il entraîne la radiation et une interdiction de recrutement dans le secteur public calédonien pendant 6 ans.',url:'https://drhfpnc.gouv.nc/carriere-des-agents-publics-rupture-conventionnelle/faq-rupture-conventionnelle'}
+ };
+
+ const familyMeta={evoluer:['Faire évoluer ce que je fais','Commencez par regarder ce qui pourrait évoluer sans nécessairement quitter votre environnement actuel.'],bouger:['Bouger','Changer de contexte n’implique pas forcément de changer de métier.'],progresser:['Progresser ou accéder à de nouvelles fonctions','Explorez les voies statutaires ou de recrutement sans confondre objectif professionnel et dispositif.'],reconnaitre:['Faire reconnaître ou développer mes acquis','Votre expérience et vos compétences existantes font partie du point de départ.'],transition:['Préparer une transition plus importante','Certaines évolutions demandent davantage d’anticipation et de vérifications.']};
+ function profileGuidance(id){
+   const s=state.statut;
+   if(!s)return {kind:'info',label:'À personnaliser',text:'Choisissez votre statut pour obtenir une indication adaptée à votre situation.'};
+   if(['competences','missions','expertise','responsabilites','formation','certification','vae','metier','reconversion','poste','service','employeur','lieu'].includes(id))return {kind:'ok',label:'À explorer',text:'Cette piste peut être étudiée quel que soit votre statut, mais ses modalités concrètes dépendront de votre situation et de votre employeur.'};
+   if(id==='avancement'){if(s==='titulaire')return {kind:'ok',label:'Particulièrement pertinent',text:'Pour un fonctionnaire titulaire, l’évolution de carrière peut inclure des mécanismes d’avancement prévus par les textes applicables au corps concerné.'};if(s==='stagiaire')return {kind:'check',label:'Vigilance',text:'Votre situation de stagiaire comporte des règles particulières. Vérifiez les effets éventuels sur votre stage et votre titularisation.'};if(s==='cdi')return {kind:'check',label:'Règles propres aux ACDP en CDI',text:'Un ACDP en CDI peut relever de mécanismes d’évolution propres à son statut et à sa grille. Ils ne doivent pas être confondus avec la carrière statutaire d’un fonctionnaire.'};return {kind:'info',label:'Pas d’avancement statutaire en CDD',text:'Le statut des ACDP ne prévoit pas pour le CDD un avancement d’échelon ou de grade comparable à celui d’un fonctionnaire. Une rémunération peut notamment être rediscutée lors d’un renouvellement, selon les règles applicables.'};}
+   if(id==='corps'){if(s==='titulaire')return {kind:'ok',label:'À explorer',text:'Cette piste peut être pertinente selon le corps visé et les conditions réglementaires.'};if(s==='stagiaire')return {kind:'check',label:'Vigilance',text:'À examiner avec prudence tant que votre situation de stage n’est pas stabilisée.'};return {kind:'info',label:'Information',text:'Pour un contractuel, on parlera plutôt de recrutement sur un autre emploi ou d’accès à un corps par une voie prévue.'};}
+   if(id==='examen'){if(s==='titulaire')return {kind:'ok',label:'À vérifier',text:'Un examen professionnel peut constituer une voie pertinente lorsqu’une session est ouverte et que vous remplissez les conditions.'};if(s==='stagiaire')return {kind:'check',label:'À vérifier',text:'Votre situation doit être vérifiée au regard des conditions de la session concernée.'};return {kind:'info',label:'Pas la voie habituelle',text:'Les examens professionnels ne doivent pas être présentés comme une voie générique pour les agents contractuels.'};}
+   if(id==='concours'){if(s==='titulaire')return {kind:'ok',label:'À explorer',text:'Selon le concours, vous pourrez notamment examiner les voies internes ou externes si vous remplissez les conditions.'};if(s==='stagiaire')return {kind:'check',label:'À vérifier',text:'Vérifiez les conditions précises de la session ainsi que les effets éventuels sur votre situation.'};return {kind:'ok',label:'À explorer',text:'Les concours externes et, lorsqu’ils sont ouverts et accessibles, certaines voies réservées peuvent constituer des pistes à examiner.'};}
+   if(id==='spi'){if(s==='cdi'||s==='cdd')return {kind:'check',label:'Éligibilité à vérifier',text:'Être contractuel ne suffit pas. L’éligibilité dépend de la campagne et de votre situation individuelle.'};return {kind:'info',label:'Information',text:'Cette voie concerne certaines situations d’agents contractuels et n’est pas une piste prioritaire pour votre profil.'};}
+   if(id==='detachement'||id==='mise_disposition'||id==='disponibilite'){if(s==='titulaire')return {kind:'ok',label:'À explorer avec votre RH',text:'Cette position statutaire peut être examinée, mais ses conditions et effets doivent être vérifiés avant toute décision.'};if(s==='stagiaire')return {kind:'check',label:'Vigilance forte',text:'Votre situation de stagiaire nécessite une vérification spécifique avant d’envisager cette position.'};return {kind:'info',label:'Information',text:'Cette position statutaire ne se transpose pas telle quelle aux agents contractuels.'};}
+
+   if(id==='rupture'){
+      if(s==='titulaire') return {kind:'check',label:'Conditions strictes à vérifier',text:'Cette voie n’est ouverte qu’aux fonctionnaires titulaires remplissant les conditions du dispositif, notamment une ancienneté minimale de 5 ans en cette qualité. Elle met fin à la carrière dans la fonction publique de Nouvelle-Calédonie.'};
+      if(s==='stagiaire') return {kind:'info',label:'Non ouverte à ce statut',text:'La rupture conventionnelle n’est pas ouverte aux fonctionnaires stagiaires.'};
+      return {kind:'info',label:'Non ouverte aux ACDP',text:'La rupture conventionnelle présentée ici n’est pas ouverte aux agents contractuels de droit public.'};
+   }
+
+   return {kind:'info',label:'À vérifier',text:'Vérifiez les modalités précises applicables à votre situation.'};
+ }
+ function renderOpportunities(fam){state.selectedFamily=fam;save();const meta=familyMeta[fam]||familyMeta.evoluer;$('#familyTitle').textContent=meta[0];$('#familyIntro').textContent=meta[1];$$('.family-tab').forEach(b=>b.classList.toggle('active',b.dataset.familyTab===fam));const prof=state.statut?'Votre profil actuel : '+statusLabel()+'.':'Votre statut n’est pas encore renseigné.';$('#profileReminder').innerHTML='<strong>Repère personnalisé :</strong><br>'+prof+' Les indications ci-dessous servent à orienter l’exploration, pas à déterminer vos droits individuels.';const box=$('#opportunityList');box.innerHTML='';(opportunities[fam]||[]).forEach(o=>{const g=profileGuidance(o.id),added=state.pistes.includes(o.id);const card=document.createElement('article');card.className='opportunity-card';const lm=legalMeta[o.id];const legalBlock=lm?'<div class="context-box legal-box"><strong>À vérifier avant d’agir</strong><br>'+lm.detail+'<div class="legal-source">Source officielle · vérifié le '+legalVerified+'<br><a href="'+lm.url+'" target="_blank" rel="noopener noreferrer">'+lm.title+' ↗</a></div></div>':'';card.innerHTML='<span class="badge '+g.kind+'">'+g.label+'</span><h3>'+o.title+'</h3><p class="desc">'+o.desc+'</p><div class="context-box"><strong>Dans votre situation</strong><br>'+g.text+'</div><div class="context-box"><strong>Par où commencer ?</strong><br>'+o.start+'</div>'+legalBlock+'<div class="card-actions"><button class="add-piste '+(added?'added':'')+'" data-piste="'+o.id+'">'+(added?'✓ Ajoutée à mes pistes':'+ Ajouter à mes pistes')+'</button></div>';box.appendChild(card);});}
+ function allOpportunities(){const out={};Object.values(opportunities).flat().forEach(o=>out[o.id]=o);return out;}
+ function renderPistes(){const box=$('#pistesList');if(!box)return;const all=allOpportunities();if(!state.pistes.length){box.innerHTML='<div class="empty-state"><strong>Aucune piste sélectionnée pour le moment.</strong><br>Retournez à la carte des possibilités et ajoutez celles qui méritent d’être explorées.</div>';return;}box.innerHTML='<div class="pistes-grid">'+state.pistes.map(id=>{const o=all[id];return '<div class="piste-card"><button class="remove-piste" data-remove-piste="'+id+'" aria-label="Retirer '+o.title+'">×</button><h3>'+o.title+'</h3><div class="mini">'+o.desc+'</div></div>';}).join('')+'</div>';}
+
+ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+ function save(){localStorage.setItem(key,JSON.stringify(state))}
+ function announce(t){$('#live').textContent=t}
+
+ const baseConstraintLabels=['Le temps disponible','Ma situation familiale ou personnelle','La localisation géographique','La rémunération','La stabilité de ma situation','Le temps nécessaire pour me former','Les conditions de diplôme','Mon organisation','Les échéances','Les possibilités offertes par mon employeur'];
+ function currentConstraintLabels(){const arr=[...baseConstraintLabels];if(state.statut==='cdd')arr.splice(5,0,'La durée ou l’échéance de mon contrat');return arr;}
+ function ensureScenarioState(){
+   if(!Array.isArray(state.scenarios)) state.scenarios=[];
+   while(state.scenarios.length<3) state.scenarios.push({objectif:'',piste:'',interet:'',atouts:[],aVerifier:'',contraintes:[],premiereAction:''});
+   state.scenarios=state.scenarios.slice(0,3).map(s=>Object.assign({objectif:'',piste:'',interet:'',atouts:[],aVerifier:'',contraintes:[],premiereAction:''},s||{}));
+   if(typeof state.activeScenario!=='number') state.activeScenario=0;
+ }
+ function renderAtouts(){
+   const box=$('#atoutsChoices'); if(!box)return;
+   const options=[...(state.ressources||[])];
+   if(state.ressourceLibre && !options.includes(state.ressourceLibre)) options.push(state.ressourceLibre);
+   if(!options.length){
+     box.innerHTML='<div class="empty-state" style="grid-column:1/-1"><strong>Commencez par identifier vos ressources.</strong><br>Vos choix de l’écran précédent apparaîtront ici.</div>';
+   } else {
+     box.innerHTML=options.map(v=>'<button class="choice '+(state.atouts.includes(v)?'selected':'')+'" data-atout="'+escapeHtml(v)+'">'+escapeHtml(v)+'</button>').join('');
+   }
+   if($('#atoutCounter')) $('#atoutCounter').textContent=(state.atouts||[]).length+' atout'+((state.atouts||[]).length>1?'s':'')+' sélectionné'+((state.atouts||[]).length>1?'s':'')+' sur 3.';
+ }
+ function renderConstraints(){
+   const box=$('#constraintList'); if(!box)return;
+   box.innerHTML=currentConstraintLabels().map(label=>{
+     const current=(state.contraintes||{})[label]||'';
+     const opts=[['peu','Peu important'],['moyen','À prendre en compte'],['fort','Déterminant']];
+     return '<div class="scale-row"><strong>'+label+'</strong>'+opts.map(([v,t])=>'<button class="scale-btn '+(current===v?'selected':'')+'" data-constraint="'+escapeHtml(label)+'" data-level="'+v+'">'+t+'</button>').join('')+'</div>';
+   }).join('');
+   if($('#contrainteLibre')) $('#contrainteLibre').value=state.contrainteLibre||'';
+ }
+ function pisteOptionsHtml(current){
+   const all=allOpportunities();
+   const ids=state.pistes||[];
+   if(!ids.length) return '<option value="">Aucune piste sélectionnée pour le moment</option>';
+   return '<option value="">Choisir une piste…</option>'+ids.map(id=>'<option value="'+id+'" '+(current===id?'selected':'')+'>'+escapeHtml((all[id]||{}).title||id)+'</option>').join('');
+ }
+ function chips(values,field){
+   if(!values||!values.length)return '<div class="mini">Aucune proposition issue des écrans précédents.</div>';
+   return '<div class="chipbox">'+values.map(v=>'<button class="chip" type="button" data-chip-field="'+field+'" data-chip-value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</button>').join('')+'</div>';
+ }
+ function renderScenarioEditor(){
+   ensureScenarioState();
+   const ed=$('#scenarioEditor'); if(!ed)return;
+   const s=state.scenarios[state.activeScenario];
+   $$('.scenario-tab').forEach((b,i)=>b.classList.toggle('active',i===state.activeScenario));
+   const constraintNames=Object.entries(state.contraintes||{}).filter(([k,v])=>v==='moyen'||v==='fort').map(([k])=>k);
+   if(state.contrainteLibre) constraintNames.push(state.contrainteLibre);
+   ed.innerHTML='<div class="scenario-form">'+
+    '<div class="scenario-field"><label>1. Qu’aimeriez-vous atteindre ?</label><textarea data-scenario-field="objectif" maxlength="600" placeholder="Ex. exercer davantage de responsabilités…">'+escapeHtml(s.objectif)+'</textarea>'+chips(state.envies,'objectif')+'</div>'+
+    '<div class="scenario-field"><label>2. Quelle piste souhaitez-vous explorer ?</label><select data-scenario-field="piste" style="width:100%;padding:13px;border:1.5px solid #d8d8d2;border-radius:12px">'+pisteOptionsHtml(s.piste)+'</select></div>'+
+    '<div class="scenario-field"><label>3. Pourquoi cette piste vous intéresse-t-elle ?</label><textarea data-scenario-field="interet" maxlength="600" placeholder="Ce qui m’attire dans cette possibilité…">'+escapeHtml(s.interet)+'</textarea></div>'+
+    '<div class="scenario-field"><label>4. Sur quels atouts pouvez-vous déjà vous appuyer ?</label>'+chips(state.atouts,'atouts')+'<div class="chipbox" id="scenarioAtoutsSelected">'+(s.atouts||[]).map(v=>'<span class="pill">'+escapeHtml(v)+'</span>').join('')+'</div></div>'+
+    '<div class="scenario-field"><label>5. Que devez-vous encore apprendre, vérifier ou obtenir ?</label><textarea data-scenario-field="aVerifier" maxlength="700" placeholder="Ex. vérifier une condition d’accès, acquérir une compétence…">'+escapeHtml(s.aVerifier)+'</textarea></div>'+
+    '<div class="scenario-field"><label>6. De quelles contraintes devez-vous tenir compte ?</label>'+chips(constraintNames,'contraintes')+'<div class="chipbox">'+(s.contraintes||[]).map(v=>'<span class="pill">'+escapeHtml(v)+'</span>').join('')+'</div></div>'+
+    '<div class="scenario-field"><label>7. Quelle pourrait être votre première démarche ?</label><textarea data-scenario-field="premiereAction" maxlength="500" placeholder="Ex. consulter deux offres, demander un échange, vérifier une condition…">'+escapeHtml(s.premiereAction)+'</textarea></div>'+
+    '</div>';
+   renderScenarioSummary();
+ }
+ function scenarioFilled(s){return !!(s && (s.objectif||s.piste||s.interet||s.aVerifier||s.premiereAction||(s.atouts||[]).length||(s.contraintes||[]).length))}
+ function renderScenarioSummary(){
+   const box=$('#scenarioSummary');if(!box)return;ensureScenarioState();
+   const all=allOpportunities();
+   box.innerHTML=state.scenarios.map((s,i)=>{
+     if(!scenarioFilled(s)) return '<div class="scenario-card empty"><h3>Scénario '+(i+1)+'</h3><p>Pas encore construit.</p></div>';
+     return '<div class="scenario-card"><div class="tagline">Scénario '+(i+1)+'</div><h3>'+(escapeHtml(s.objectif)||'Objectif à préciser')+'</h3><p><strong>Voie :</strong> '+escapeHtml(s.piste?((all[s.piste]||{}).title||s.piste):'À préciser')+'</p><p><strong>Première démarche :</strong> '+escapeHtml(s.premiereAction||'À préciser')+'</p></div>';
+   }).join('');
+ }
+ function scenarioPisteTitles(){
+   const all=allOpportunities();
+   return state.scenarios.filter(s=>scenarioFilled(s)).map((s,i)=>'Scénario '+(i+1)+' : '+(s.objectif||'objectif à préciser')+(s.piste?' — '+((all[s.piste]||{}).title||s.piste):''));
+ }
+
+
+ const compareCriteria=[
+  ['correspond','Correspond à ce que je recherche'],
+  ['acquis','S’appuie sur mes acquis'],
+  ['accessible','Me paraît accessible'],
+  ['effort','Demande un investissement réaliste'],
+  ['contraintes','Est compatible avec mes contraintes'],
+  ['envie','J’ai envie de continuer à l’explorer']
+ ];
+ const selfEvalItems=[
+  'Préciser ce que je recherche dans une évolution',
+  'Identifier plusieurs voies possibles',
+  'Distinguer mon objectif professionnel du dispositif permettant de l’atteindre',
+  'Repérer mes principaux atouts',
+  'Identifier les contraintes dont mon projet doit tenir compte',
+  'Construire un scénario d’évolution',
+  'Définir une première démarche pour l’explorer'
+ ];
+ function filledScenarioIndexes(){ensureScenarioState();return state.scenarios.map((s,i)=>scenarioFilled(s)?i:null).filter(i=>i!==null)}
+ function renderMatrix(){
+   const box=$('#matrixArea');if(!box)return;
+   const idxs=filledScenarioIndexes(), all=allOpportunities();
+   if(!idxs.length){box.innerHTML='<div class="empty-state"><strong>Aucun scénario n’est encore construit.</strong><br>Revenez à l’étape précédente pour créer au moins un scénario.</div>';return}
+   if(idxs.length===1){
+     box.innerHTML='<div class="message"><strong>Vous avez construit un seul scénario.</strong><br>Vous pouvez tout de même l’examiner avec les six critères. La comparaison deviendra plus utile si vous ajoutez une seconde piste.</div>';
+   } else box.innerHTML='';
+   const grid=document.createElement('div');grid.className='matrix-grid';
+   idxs.forEach(i=>{
+     const s=state.scenarios[i], card=document.createElement('div');card.className='matrix-card';
+     const title=s.objectif||('Scénario '+(i+1));
+     const voie=s.piste?((all[s.piste]||{}).title||s.piste):'Voie à préciser';
+     let inner='<div class="tagline">Scénario '+(i+1)+'</div><h3>'+escapeHtml(title)+'</h3><div class="mini">'+escapeHtml(voie)+'</div>';
+     compareCriteria.forEach(([key,label])=>{
+       const current=((state.comparaison||{})[i]||{})[key]||0;
+       inner+='<div class="matrix-row"><div class="matrix-label">'+label+'</div><div class="rating">'+[1,2,3,4,5].map(v=>'<button data-rate-scenario="'+i+'" data-rate-key="'+key+'" data-rate-value="'+v+'" class="'+(current===v?'selected':'')+'" aria-label="'+label+' : '+v+' sur 5">'+v+'</button>').join('')+'</div><div class="rating-legend"><span>peu</span><span>beaucoup</span></div></div>';
+     });
+     card.innerHTML=inner;grid.appendChild(card);
+   });
+   box.appendChild(grid);
+   if($('#compareObservation'))$('#compareObservation').value=state.compareObservation||'';
+ }
+ function renderReflection(){
+   $$('#reflectionChoices .reflection-choice').forEach(b=>b.classList.toggle('selected',b.dataset.reflection===state.etatReflexion));
+ }
+ function renderHorizons(){
+   if($('#actionMaintenant'))$('#actionMaintenant').value=state.actionMaintenant||'';
+   if($('#actionMois'))$('#actionMois').value=state.actionMois||'';
+   if($('#actionLongTerme'))$('#actionLongTerme').value=state.actionLongTerme||'';
+ }
+ function renderCase(caseId){
+   const arr=state[caseId==='maeva'?'caseMaeva':'caseDavid']||[];
+   $$('[data-case="'+caseId+'"]').forEach((b,idx)=>b.classList.toggle('selected',arr.includes(idx)));
+ }
+ function renderSelfEval(){
+   const box=$('#selfEval');if(!box)return;
+   const opts=[['non','Pas encore'],['partiel','En partie'],['oui','Oui']];
+   box.innerHTML=selfEvalItems.map((label,i)=>{
+     const cur=(state.selfEval||{})[i]||'';
+     return '<div class="eval-row"><strong>'+label+'</strong>'+opts.map(([v,t])=>'<button class="eval-btn '+(cur===v?'selected':'')+'" data-selfeval="'+i+'" data-selfeval-value="'+v+'">'+t+'</button>').join('')+'</div>';
+   }).join('');
+ }
+ function orientationFlags(){
+   const ids=new Set(state.pistes||[]);
+   ensureScenarioState();state.scenarios.forEach(s=>{if(s.piste)ids.add(s.piste)});
+   return {concours:ids.has('concours')||ids.has('examen'),metier:ids.has('metier')||ids.has('reconversion'),vae:ids.has('vae'),mobilite:ids.has('poste')||ids.has('service')||ids.has('employeur')||ids.has('lieu')||ids.has('mise_disposition'),rupture:ids.has('rupture')};
+ }
+ function renderFinal(){
+   const box=$('#finalSummary');if(!box)return;
+   const all=allOpportunities();
+   const scenarios=state.scenarios.filter(s=>scenarioFilled(s));
+   const strongConstraints=Object.entries(state.contraintes||{}).filter(([k,v])=>v==='fort'||v==='moyen').map(([k,v])=>k+(v==='fort'?' — déterminant':' — à prendre en compte'));
+   const sections=[
+    ['Ce que je recherche',state.projection||list(state.envies)],
+    ['Ce qui compte pour moi',list(state.priorites)],
+    ['Mon point de départ',[statusLabel(),state.fonction,state.employeur].filter(Boolean).join(' · ')||'À compléter'],
+    ['Mes principaux atouts',list(state.atouts)],
+    ['Mes pistes',state.pistes.length?state.pistes.map(id=>(all[id]||{}).title||id).join(' · '):'À compléter'],
+    ['Ce dont je dois tenir compte',strongConstraints.concat(state.contrainteLibre?[state.contrainteLibre]:[]).join(' · ')||'À compléter'],
+    ['Où en est ma réflexion',state.etatReflexion||'À compléter'],
+    ['Mes prochaines étapes','Maintenant : '+(state.actionMaintenant||'…')+' | Prochains mois : '+(state.actionMois||'…')+' | Plus tard : '+(state.actionLongTerme||'…')]
+   ];
+   box.innerHTML=sections.map((s,i)=>'<div class="final-card '+(i===7?'wide':'')+'"><h3>'+s[0]+'</h3><div>'+escapeHtml(s[1])+'</div></div>').join('');
+   if(scenarios.length){
+     box.innerHTML+='<div class="final-card wide"><h3>Mes scénarios</h3>'+scenarios.map((s,i)=>'<p><strong>Scénario '+(i+1)+' :</strong> '+escapeHtml(s.objectif||'Objectif à préciser')+(s.piste?' — '+escapeHtml((all[s.piste]||{}).title||s.piste):'')+'</p>').join('')+'</div>';
+   }
+   const doors=$('#orientationDoors'), f=orientationFlags();let h='<h3 style="margin-top:28px">Pour poursuivre votre exploration</h3><div class="next-doors">';
+   h+='<div class="next-door"><strong>Mon carnet</strong><div class="mini">Utilisez-le pour préparer vos recherches ou un échange avec votre responsable ou votre service RH.</div></div>';
+   if(f.concours)h+='<div class="next-door"><strong>Construire mon projet de concours</strong><div class="mini">Cette ressource devient pertinente parce qu’un concours ou un examen figure parmi vos pistes.</div></div>';
+   if(f.metier)h+='<div class="next-door"><strong>Explorer les métiers</strong><div class="mini">Poursuivez vos recherches sur les missions, compétences et conditions d’exercice des métiers envisagés.</div></div>';
+   if(f.vae)h+='<div class="next-door"><strong>Approfondir la piste VAE</strong><div class="mini">Identifiez une certification cohérente et vérifiez les conditions auprès des interlocuteurs compétents.</div></div>';
+   if(f.mobilite)h+='<div class="next-door"><strong>Observer les opportunités de mobilité</strong><div class="mini">Consultez les emplois et postes correspondant à vos aspirations et à votre situation.</div></div>';
+   if(f.rupture)h+='<div class="next-door"><strong>Vérifier les conditions d’une sortie de la fonction publique</strong><div class="mini">La rupture conventionnelle est un dispositif aux conséquences importantes : vérifiez votre éligibilité et ses effets avant toute démarche.</div></div>';
+   h+='</div>';doors.innerHTML=h;
+ }
+ function printNotebook(){
+   const all=allOpportunities();ensureScenarioState();
+   const esc=escapeHtml;
+   const scenarios=state.scenarios.filter(s=>scenarioFilled(s));
+   const constraints=Object.entries(state.contraintes||{}).filter(([k,v])=>v==='moyen'||v==='fort').map(([k,v])=>k+' ('+(v==='fort'?'déterminant':'à prendre en compte')+')');
+   const scenarioHtml=scenarios.length?scenarios.map((s,i)=>
+     '<div class="box scenario"><h3>Scénario '+(i+1)+'</h3>'+ 
+     '<p><strong>Objectif :</strong> '+esc(s.objectif||'À préciser')+'</p>'+ 
+     '<p><strong>Voie :</strong> '+esc(s.piste?((all[s.piste]||{}).title||s.piste):'À préciser')+'</p>'+ 
+     '<p><strong>Pourquoi :</strong> '+esc(s.interet||'À préciser')+'</p>'+ 
+     '<p><strong>Atouts :</strong> '+esc((s.atouts||[]).join(' · ')||'À préciser')+'</p>'+ 
+     '<p><strong>À vérifier :</strong> '+esc(s.aVerifier||'À préciser')+'</p>'+ 
+     '<p><strong>Première démarche :</strong> '+esc(s.premiereAction||'À préciser')+'</p></div>'
+   ).join(''):'<div class="box">Aucun scénario construit.</div>';
+   const html=`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Mon carnet d’évolution professionnelle</title><style>
+body{font-family:Arial,sans-serif;color:#2d2d2d;margin:34px;line-height:1.45}h1{font-size:30px;margin-bottom:3px}h2{font-size:19px;border-bottom:2px solid #2FB6BC;padding-bottom:7px;margin-top:28px}h3{font-size:15px;margin-bottom:5px}.cover{padding:45px 0 70px}.ifap{font-weight:900;font-size:20px}.meta{color:#666}.box{border:1px solid #ddd;border-radius:10px;padding:13px;margin:10px 0}.scenario{break-inside:avoid}.foot{margin-top:40px;font-size:11px;color:#777}@media print{button{display:none}}
+</style></head><body>
+<div class="cover"><div class="ifap">IFAP</div><h1>Mon carnet d’évolution professionnelle</h1><p class="meta">Issu du module « Explorer mes possibilités d’évolution professionnelle »</p><p class="meta">${new Date().toLocaleDateString('fr-FR')}</p></div>
+<h2>Ce que je recherche</h2><div class="box">${esc(state.projection||list(state.envies))}</div>
+<h2>Mes priorités</h2><div class="box">${esc(list(state.priorites))}</div>
+<h2>Mon point de départ</h2><div class="box">${esc([statusLabel(),state.fonction,state.employeur,state.anciennete,state.categorie?('Catégorie '+state.categorie):''].filter(Boolean).join(' · '))}</div>
+<h2>Mes principaux atouts</h2><div class="box">${esc(list(state.atouts))}</div>
+<h2>Mes pistes</h2><div class="box">${esc(state.pistes.length?state.pistes.map(id=>(all[id]||{}).title||id).join(' · '):'À compléter')}</div>
+<h2>Ce dont mon projet doit tenir compte</h2><div class="box">${esc(constraints.concat(state.contrainteLibre?[state.contrainteLibre]:[]).join(' · ')||'À compléter')}</div>
+<h2>Mes scénarios</h2>${scenarioHtml}
+<h2>Où en est ma réflexion</h2><div class="box">${esc(state.etatReflexion||'À compléter')}${state.compareObservation?'<p>'+esc(state.compareObservation)+'</p>':''}</div>
+<h2>Mes prochaines étapes</h2><div class="box"><p><strong>Maintenant :</strong> ${esc(state.actionMaintenant||'…')}</p><p><strong>Dans les prochains mois :</strong> ${esc(state.actionMois||'…')}</p><p><strong>À plus long terme :</strong> ${esc(state.actionLongTerme||'…')}</p></div>
+<div class="foot">Ce carnet est un support de réflexion. Les informations statutaires et les conditions d’accès à un dispositif doivent être vérifiées auprès des sources officielles et, pour votre situation individuelle, auprès de votre service RH.</div>
+<script>window.onload=()=>window.print()<\/script></body></html>`;
+   const w=window.open('','_blank');
+   if(w){w.document.open();w.document.write(html);w.document.close()}else alert('Autorisez les fenêtres contextuelles pour imprimer votre carnet.');
+ }
+
+ function show(i){
+   i=Math.max(0,Math.min(screens.length-1,i));state.screen=i;save();
+   screens.forEach((s,n)=>s.classList.toggle('active',n===i));
+   const pct=Math.round((i/(screens.length-1))*100);
+   $('#progressBar').style.width=pct+'%';$('#pct').textContent=pct+' %';
+   $('#navTitle').textContent=screens[i].dataset.title;$('#navPos').textContent='Écran '+(i+1)+' sur '+screens.length;
+   $('#prev').disabled=i===0;$('#next').disabled=i===screens.length-1;
+   updateSummary();updateToc();if(screens[i].dataset.title==='Explorer les possibilités')renderOpportunities(state.selectedFamily||'evoluer');if(screens[i].dataset.title==='Mes pistes à explorer')renderPistes();if(screens[i].dataset.title==='Mes trois atouts')renderAtouts();if(screens[i].dataset.title==='Mes contraintes')renderConstraints();if(screens[i].dataset.title==='Construire mes scénarios')renderScenarioEditor();if(screens[i].dataset.title==='Ma matrice de comparaison')renderMatrix();if(screens[i].dataset.title==='Où en suis-je ?')renderReflection();if(screens[i].dataset.title==='Mes trois horizons')renderHorizons();if(screens[i].dataset.title==='Situation Maëva')renderCase('maeva');if(screens[i].dataset.title==='Situation David')renderCase('david');if(screens[i].dataset.title==='Mon autoévaluation')renderSelfEval();if(screens[i].dataset.title==='Ma synthèse finale')renderFinal();window.scrollTo({top:0,behavior:'smooth'});announce('Écran '+(i+1)+' : '+screens[i].dataset.title)
+ }
+ function toggleMulti(btn,keyname,max){
+   const val=btn.textContent.trim(), arr=state[keyname]||[], idx=arr.indexOf(val);
+   if(idx>=0)arr.splice(idx,1);else if(!max||arr.length<max)arr.push(val);
+   state[keyname]=arr;save();paint();
+ }
+ function paint(){
+   $$('.multi').forEach(box=>{
+     const k=box.dataset.key, vals=state[k]||[];
+     box.querySelectorAll('.choice').forEach(b=>b.classList.toggle('selected',vals.includes(b.textContent.trim())));
+   });
+   $$('#statusGrid .status').forEach(b=>b.classList.toggle('selected',b.dataset.status===state.statut));
+   $('#projection').value=state.projection||'';$('#projectionCount').textContent=(state.projection||'').length;
+   $('#fonction').value=state.fonction||'';$('#employeur').value=state.employeur||'';
+   $('#anciennete').value=state.anciennete||'';$('#categorie').value=state.categorie||'';
+   $('#prioHint').textContent=(state.priorites||[]).length+' priorité'+((state.priorites||[]).length>1?'s':'')+' sélectionnée'+((state.priorites||[]).length>1?'s':'')+' sur 3.';
+   if($('#ressourceLibre')){$('#ressourceLibre').value=state.ressourceLibre||'';$('#ressourceCount').textContent=(state.ressourceLibre||'').length}
+   if($('#contrainteLibre')) $('#contrainteLibre').value=state.contrainteLibre||'';
+   updateSummary();updateNotebook();renderAtouts();renderConstraints();renderScenarioSummary();renderReflection();renderHorizons();renderSelfEval()
+ }
+ $$('.multi .choice').forEach(btn=>btn.addEventListener('click',()=>toggleMulti(btn,btn.closest('.multi').dataset.key,btn.closest('.multi').classList.contains('max3')?3:null)));
+ $('#projection').addEventListener('input',e=>{state.projection=e.target.value;save();$('#projectionCount').textContent=e.target.value.length;updateNotebook()});
+
+ $('#ressourceLibre')&&$('#ressourceLibre').addEventListener('input',e=>{state.ressourceLibre=e.target.value;save();$('#ressourceCount').textContent=e.target.value.length;renderAtouts();updateNotebook()});
+ $('#contrainteLibre')&&$('#contrainteLibre').addEventListener('input',e=>{state.contrainteLibre=e.target.value;save();updateNotebook()});
+
+ $('#compareObservation')&&$('#compareObservation').addEventListener('input',e=>{state.compareObservation=e.target.value;save();updateNotebook()});
+ [['actionMaintenant','actionMaintenant'],['actionMois','actionMois'],['actionLongTerme','actionLongTerme']].forEach(([id,k])=>{$('#'+id)&&$('#'+id).addEventListener('input',e=>{state[k]=e.target.value;save();updateNotebook()})});
+
+
+ $$('#statusGrid .status').forEach(b=>b.addEventListener('click',()=>{state.statut=b.dataset.status;save();paint();
+   $('#statusMessage').innerHTML=state.statut==='inconnu'?'<strong>Vous pourrez poursuivre sans blocage.</strong><br>Vous pourrez vérifier votre statut plus tard sur vos documents administratifs ou auprès de votre service RH.':'<strong>Votre parcours sera adapté.</strong><br>Certaines cartes de la suite afficheront des informations ou vigilances spécifiques à cette situation.';}));
+ [['fonction','fonction'],['employeur','employeur']].forEach(([id,k])=>$('#'+id).addEventListener('input',e=>{state[k]=e.target.value;save();updateNotebook()}));
+ [['anciennete','anciennete'],['categorie','categorie']].forEach(([id,k])=>$('#'+id).addEventListener('change',e=>{state[k]=e.target.value;save();updateNotebook()}));
+ $('#maevaQuiz').addEventListener('click',e=>{
+   const b=e.target.closest('[data-answer]');if(!b)return;
+   $$('#maevaQuiz .choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');
+   const good=b.dataset.answer==='good', f=$('#maevaFeedback');f.classList.add('show');
+   f.innerHTML=good?'<strong>Oui.</strong> Le concours peut être une voie, mais Maëva gagne d’abord à préciser les fonctions qu’elle vise et à comparer les différentes voies permettant d’y accéder.':'<strong>Pas tout à fait.</strong> Un concours peut être utile, mais il ne devrait pas être choisi avant d’avoir clarifié l’objectif professionnel qu’il est censé servir.';
+ });
+ function statusLabel(){return {titulaire:'Fonctionnaire titulaire',stagiaire:'Fonctionnaire stagiaire',cdi:'ACDP en CDI',cdd:'ACDP en CDD',inconnu:'Statut à vérifier'}[state.statut]||'Non précisé'}
+ function list(a){return a&&a.length?a.join(' · '):'À compléter'}
+ function updateSummary(){
+   if(!$('#sumSituation'))return;
+   $('#sumSituation').textContent=[statusLabel(),state.fonction,state.employeur].filter(x=>x).join(' · ')||'À compléter';
+   $('#sumEnvies').textContent=list(state.envies);$('#sumProjection').textContent=state.projection||'À compléter';$('#sumPriorites').textContent=list(state.priorites)
+ }
+ function updateNotebook(){
+   const n=$('#notebookContent');if(!n)return;
+   n.innerHTML=[
+    ['Ce qui m’amène à réfléchir',list(state.motivations)],
+    ['Ce que j’aimerais faire évoluer',list(state.envies)],
+    ['Ma projection',state.projection||'À compléter'],
+    ['Mes priorités',list(state.priorites)],
+    ['Mon point de départ',[statusLabel(),state.fonction,state.employeur,state.anciennete,state.categorie?('Catégorie '+state.categorie):''].filter(x=>x).join(' · ')||'À compléter'],['Mes pistes à explorer',state.pistes.length?state.pistes.map(id=>allOpportunities()[id]?.title||id).join(' · '):'Aucune piste sélectionnée'],
+    ['Mes ressources',list(state.ressources)+(state.ressourceLibre?' · '+state.ressourceLibre:'')],
+    ['Mes trois atouts',list(state.atouts)],
+    ['Ce dont mon projet devra tenir compte',Object.entries(state.contraintes||{}).filter(([k,v])=>v==='moyen'||v==='fort').map(([k,v])=>k+' ('+(v==='fort'?'déterminant':'à prendre en compte')+')').concat(state.contrainteLibre?[state.contrainteLibre]:[]).join(' · ')||'À compléter'],
+    ['Mes scénarios',scenarioPisteTitles().join(' | ')||'Aucun scénario construit'],
+    ['Ce que je remarque en comparant mes scénarios',state.compareObservation||'À compléter'],
+    ['Où en est ma réflexion',state.etatReflexion||'À compléter'],
+    ['Mes prochaines étapes','Maintenant : '+(state.actionMaintenant||'…')+' · Prochains mois : '+(state.actionMois||'…')+' · Plus tard : '+(state.actionLongTerme||'…')]
+   ].map(x=>'<div class="note-block"><h3>'+x[0]+'</h3><div>'+escapeHtml(x[1])+'</div></div>').join('')
+ }
+ function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+ function updateToc(){
+   const box=$('#tocList');box.innerHTML='';
+   screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+s.dataset.title;b.className=i===state.screen?'current':'';b.onclick=()=>{closeDrawers();show(i)};box.appendChild(b)})
+ }
+ $('#prev').onclick=()=>show(state.screen-1);$('#next').onclick=()=>show(state.screen+1);
+ $$('[data-go="next"]').forEach(b=>b.onclick=()=>show(state.screen+1));
+ function openDrawer(id){$('#'+id).classList.add('open');$('#'+id).setAttribute('aria-hidden','false');$('#'+id+' .close').focus()}
+ function closeDrawers(){$$('.drawer').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true')})}
+ $('#btnToc').onclick=()=>openDrawer('tocDrawer');$('#btnNotebook').onclick=()=>{updateNotebook();openDrawer('noteDrawer')};
+ $$('.close').forEach(b=>b.onclick=closeDrawers);$$('.drawer').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDrawers()}));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawers()});
+ $('#btnFull').onclick=async()=>{
+   try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen()}else{await document.exitFullscreen()}}catch(e){}
+ };
+ document.addEventListener('fullscreenchange',()=>{$('#btnFull').innerHTML=document.fullscreenElement?'⛶ <span class="label">Quitter le plein écran</span>':'⛶ <span class="label">Plein écran</span>';$('#btnFull').setAttribute('aria-pressed',document.fullscreenElement?'true':'false')});
+
+ document.addEventListener('click',e=>{const open=e.target.closest('[data-open-family]');if(open){state.selectedFamily=open.dataset.openFamily;save();const idx=screens.findIndex(s=>s.dataset.title==='Explorer les possibilités');show(idx);return;}const tab=e.target.closest('[data-family-tab]');if(tab){renderOpportunities(tab.dataset.familyTab);return;}const add=e.target.closest('[data-piste]');if(add){const id=add.dataset.piste,i=state.pistes.indexOf(id);if(i>=0)state.pistes.splice(i,1);else state.pistes.push(id);save();renderOpportunities(state.selectedFamily);updateNotebook();announce(i>=0?'Piste retirée':'Piste ajoutée au carnet');return;}const rem=e.target.closest('[data-remove-piste]');if(rem){state.pistes=state.pistes.filter(x=>x!==rem.dataset.removePiste);save();renderPistes();updateNotebook();announce('Piste retirée');return;}
+const at=e.target.closest('[data-atout]');if(at){const v=at.dataset.atout,i=state.atouts.indexOf(v);if(i>=0)state.atouts.splice(i,1);else if(state.atouts.length<3)state.atouts.push(v);save();renderAtouts();updateNotebook();return;}
+const cb=e.target.closest('[data-constraint]');if(cb){const label=cb.dataset.constraint,level=cb.dataset.level;state.contraintes=state.contraintes||{};state.contraintes[label]=state.contraintes[label]===level?'':level;save();renderConstraints();updateNotebook();return;}
+const stab=e.target.closest('[data-scenario-tab]');if(stab){state.activeScenario=parseInt(stab.dataset.scenarioTab,10)||0;save();renderScenarioEditor();return;}
+const chip=e.target.closest('[data-chip-field]');if(chip){ensureScenarioState();const field=chip.dataset.chipField,v=chip.dataset.chipValue,s=state.scenarios[state.activeScenario];
+ if(field==='objectif'){s.objectif=s.objectif?((s.objectif.includes(v))?s.objectif:s.objectif+' ; '+v):v;}
+ if(field==='atouts'){s.atouts=s.atouts||[];if(!s.atouts.includes(v))s.atouts.push(v);}
+ if(field==='contraintes'){s.contraintes=s.contraintes||[];if(!s.contraintes.includes(v))s.contraintes.push(v);}
+ save();renderScenarioEditor();updateNotebook();return;}
+
+const rate=e.target.closest('[data-rate-scenario]');if(rate){const i=rate.dataset.rateScenario,k=rate.dataset.rateKey,v=parseInt(rate.dataset.rateValue,10);state.comparaison=state.comparaison||{};state.comparaison[i]=state.comparaison[i]||{};state.comparaison[i][k]=v;save();renderMatrix();updateNotebook();return;}
+const refl=e.target.closest('[data-reflection]');if(refl){state.etatReflexion=refl.dataset.reflection;save();renderReflection();updateNotebook();return;}
+const copt=e.target.closest('[data-case]');if(copt){const key=copt.dataset.case==='maeva'?'caseMaeva':'caseDavid',idx=[...copt.parentElement.querySelectorAll('[data-case]')].indexOf(copt);state[key]=state[key]||[];const pos=state[key].indexOf(idx);if(pos>=0)state[key].splice(pos,1);else state[key].push(idx);save();renderCase(copt.dataset.case);return;}
+const valid=e.target.closest('[data-validate-case]');if(valid){const id=valid.dataset.validateCase,key=id==='maeva'?'caseMaeva':'caseDavid',box=id==='maeva'?$('#caseMaeva'):$('#caseDavid'),fb=id==='maeva'?$('#caseMaevaFeedback'):$('#caseDavidFeedback');const selected=state[key]||[];const opts=[...box.querySelectorAll('[data-case]')];opts.forEach((b,i)=>{b.classList.toggle('correct',selected.includes(i)&&b.dataset.correct==='1');b.classList.toggle('wrong',selected.includes(i)&&b.dataset.correct==='0')});const ok=opts.every((b,i)=>(b.dataset.correct==='1')===selected.includes(i));fb.classList.add('show');fb.innerHTML=ok?'<strong>Oui.</strong> Vous avez adopté le bon réflexe : clarifier l’objectif, vérifier la voie envisagée et reconnaître les acquis avant de s’engager.':'<strong>À compléter.</strong> L’idée centrale est d’explorer avant de décider : vérifier l’objectif, les conditions, les alternatives et les acquis déjà disponibles.';return;}
+const se=e.target.closest('[data-selfeval]');if(se){state.selfEval=state.selfEval||{};state.selfEval[se.dataset.selfeval]=se.dataset.selfevalValue;save();renderSelfEval();return;}
+
+});
+
+
+ document.addEventListener('input',e=>{
+   const f=e.target.closest('[data-scenario-field]');if(!f)return;
+   ensureScenarioState();const s=state.scenarios[state.activeScenario],field=f.dataset.scenarioField;
+   if(['objectif','interet','aVerifier','premiereAction'].includes(field)){s[field]=f.value;save();renderScenarioSummary();updateNotebook();}
+ });
+ document.addEventListener('change',e=>{
+   const f=e.target.closest('[data-scenario-field="piste"]');if(!f)return;
+   ensureScenarioState();state.scenarios[state.activeScenario].piste=f.value;save();renderScenarioSummary();updateNotebook();
+ });
+
+
+ $('#btnPrintNotebook')&&($('#btnPrintNotebook').onclick=printNotebook);
+ $('#btnOpenNotebookFinal')&&($('#btnOpenNotebookFinal').onclick=()=>{updateNotebook();openDrawer('noteDrawer')});
+
+ $('#restart').onclick=()=>{if(confirm('Effacer les réponses du prototype et recommencer ?')){localStorage.removeItem(key);location.reload()}};
+ if(localStorage.getItem(key))$('#resumeBanner').classList.add('show');
+ paint();show(state.screen||0)
+})();
+</script>
+</body>
+</html>
