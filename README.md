@@ -1,48 +1,29 @@
-# Explorer mes possibilités d’évolution professionnelle
+# Valoriser son expérience et présenter son projet professionnel
 
-Prototype interactif IFAP / LIANE — version GitHub Pages.
+Version web autonome du module IFAP, prête à publier avec GitHub Pages.
 
-## Déploiement
+## Contenu
 
-Aucune compilation n’est nécessaire. Le site est statique.
+- `index.html` : module complet
+- `assets/` : illustrations pédagogiques SVG
+- `assets/infographies/` : six infographies WebP intégrées au parcours
+- `docs/fiche_reflexe_experience_projet.pdf` : fiche réflexe téléchargeable
+- `docs/` : crédits et textes alternatifs
 
-1. Déposer le contenu de ce dossier à la racine du dépôt GitHub.
-2. Dans GitHub : **Settings → Pages**.
-3. Dans **Build and deployment**, choisir **Deploy from a branch**.
+## Publication avec GitHub Pages
+
+1. Déposer tout le contenu de ce dossier à la racine du dépôt.
+2. Ouvrir **Settings > Pages**.
+3. Choisir **Deploy from a branch**.
 4. Sélectionner la branche `main` et le dossier `/ (root)`.
 5. Enregistrer.
 
-Le point d’entrée est `index.html`.
+Aucune compilation n’est nécessaire. Les chemins sont relatifs et le site est statique.
 
-## Structure
+## Données du candidat
 
-- `index.html` : module interactif ;
-- `assets/infographies/` : 4 infographies SVG ;
-- `.nojekyll` : empêche le traitement Jekyll inutile ;
-- `CREDITS.md` : crédits et dépendances externes.
+Les productions personnelles sont conservées localement dans le navigateur dans cette version web. Le candidat peut générer son dossier personnel au format PDF depuis le module.
 
-## Données apprenant
+## Version
 
-Le prototype conserve les réponses dans le stockage local du navigateur (`localStorage`). Aucune donnée personnelle du carnet n’est envoyée vers GitHub.
-
-## À faire avant diffusion de production
-
-- remplacer ou localiser les portraits externes ;
-- terminer la recette tablette / desktop ;
-- intégrer la couche SCORM 1.2 pour LIANE ;
-- effectuer la recette réglementaire finale avant publication.
-
-
-## v0.9
-- Personas recontextualisés pour la Nouvelle-Calédonie.
-- Portraits intégrés localement dans `assets/portraits/`.
-- Suppression des mentions de test/provisoire.
-- Aucun chargement distant nécessaire pour les portraits.
-
-## v0.9 — recette de l’accueil
-
-- recomposition verticale du panneau des personas ;
-- cartes élargies et meilleure lisibilité des rôles/citations ;
-- portraits recadrés sans texte ni faux logo dans l’image ;
-- amélioration de l’affichage tablette et mobile ;
-- portraits toujours intégrés localement.
+Version intégrée - septembre 2026.
